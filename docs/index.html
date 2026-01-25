@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Telegram Mirror</title>
+  <meta name="description" content="Автоматическое зеркало Telegram-канала на GitHub Pages" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="title-grid">
+        <div class="grid-avatar">
+          <img id="channelAvatar" class="channel-avatar" src="" alt="Аватар канала" hidden />
+        </div>
+        <div class="grid-main">
+          <div class="title-head">
+            <div class="title-left">
+              <span class="badge-chip" id="siteTitleWrap"><h1 id="siteTitle">Telegram Mirror</h1></span>
+            </div>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="#" target="_blank" rel="noopener" hidden>Подписаться</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+        <div class="controls">
+          <input id="searchInput" type="search" placeholder="Поиск по тексту постов…" autocomplete="off" />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="status" class="status"></div>
+
+    <div id="posts" class="posts"></div>
+
+    <div class="pager">
+      <button id="loadMoreBtn" type="button">Показать ещё</button>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>Сгенерировано автоматически.</span>
+        <a id="repoLink" href="#" target="_blank" rel="noopener">Репозиторий</a>
+        <span class="footer-links">
+          <a href="./feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="./atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./common.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

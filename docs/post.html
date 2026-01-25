@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Пост — Telegram Mirror</title>
+  <meta name="description" content="Отдельная страница поста из Telegram-архива" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <div class="grid-avatar">
+          <img id="channelAvatar" class="channel-avatar" src="" alt="Аватар канала" hidden />
+        </div>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="./">← Ко всем постам</a>
+            <span class="badge-chip" id="siteTitleWrap"><h1 id="siteTitle">Telegram Mirror</h1></span>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="#" target="_blank" rel="noopener" hidden>Подписаться</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container single-page">
+    <div id="status" class="status"></div>
+
+    <article id="postContainer" class="post post-page"></article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="#">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="#">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>Сгенерировано автоматически.</span>
+        <a id="repoLink" href="#" target="_blank" rel="noopener">Репозиторий</a>
+        <span class="footer-links">
+          <a href="./feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="./atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./common.js"></script>
+  <script src="./post.js"></script>
+</body>
+</html>
