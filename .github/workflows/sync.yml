@@ -3,8 +3,8 @@ name: Sync Telegram channel to GitHub Pages
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 * * * *"
-    - cron: "47 * * * *"
+    - cron: "27 * * * *"
+    - cron: "57 * * * *"
 
 permissions:
   contents: write
