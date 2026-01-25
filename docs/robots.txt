@@ -1,0 +1,7 @@
+# Robots file is auto-generated; set FEED_SITE_URL to your deployed site for correct absolute links.
+User-agent: *
+Allow: /
+
+Sitemap: https://ml-brand.github.io/timeforcv/sitemap.xml
+Sitemap: https://ml-brand.github.io/timeforcv/feed.xml
+Sitemap: https://ml-brand.github.io/timeforcv/atom.xml
