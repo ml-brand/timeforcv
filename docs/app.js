@@ -2,194 +2,167 @@
 
 const POSTS_URL = './data/posts.json';
 const META_URL = './data/meta.json';
-const Common = window.Common;
-const { el, normalizeHashtag } = Common;
+const CONFIG_URL = './data/config.json';
+const DATA_PAGES_BASE = './data/pages';
 
-const state = {
+const Common = window.Common;
+const {
+  el: getById,
+  normalizeHashtag,
+  setStatus: setStatusText,
+  formatLocalDate,
+} = Common;
+
+const uiState = {
   posts: [],
-  filtered: [],
+  filteredPosts: [],
   pageSize: 30,
-  rendered: 0,
-  query: '',
-  filter: 'all',
-  postIndex: new Map(),
+  renderedCount: 0,
+  jsonPages: {
+    total: 0,
+    size: 0,
+  },
+  searchQuery: '',
+  postById: new Map(),
 };
 
-function setStatus(text, kind){
-  const box = Common.el('status');
-  if(!text){
-    box.textContent = '';
-    box.className = 'status';
-    box.style.display = 'none';
-    return;
-  }
-  box.textContent = text;
-  box.className = 'status' + (kind ? ' ' + kind : '');
-  box.style.display = '';
+let subscribeLinkOverride = '';
+let promoBannerHtml = '';
+
+function escapeRegExp(str){
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function formatLocalDate(iso){
-  if(!iso) return '—';
-  try{
-    const d = new Date(iso);
-    return d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
-  }catch(e){
-    return iso;
+function clearSearchHighlights(rootNode){
+  if(!rootNode) return;
+  const marks = rootNode.querySelectorAll('mark.search-hit');
+  marks.forEach((mark) => {
+    const parent = mark.parentNode;
+    if(!parent) return;
+    parent.replaceChild(document.createTextNode(mark.textContent || ''), mark);
+    parent.normalize();
+  });
+}
+
+function highlightSearchMatchesInCard(cardNode, query){
+  if(!cardNode) return;
+  const body = cardNode.querySelector('.post-body');
+  if(!body) return;
+
+  clearSearchHighlights(body);
+
+  const queryText = (query || '').trim();
+  if(!queryText) return;
+
+  const lowerQuery = queryText.toLowerCase();
+  if(!body.textContent || !body.textContent.toLowerCase().includes(lowerQuery)) return;
+
+  const queryRe = new RegExp(escapeRegExp(queryText), 'gi');
+  const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT, {
+    acceptNode(node){
+      if(!node || !node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+      const parent = node.parentElement;
+      if(!parent) return NodeFilter.FILTER_REJECT;
+      if(parent.closest('mark.search-hit')) return NodeFilter.FILTER_REJECT;
+      if(parent.closest('script') || parent.closest('style')) return NodeFilter.FILTER_REJECT;
+      return node.nodeValue.toLowerCase().includes(lowerQuery)
+        ? NodeFilter.FILTER_ACCEPT
+        : NodeFilter.FILTER_REJECT;
+    }
+  });
+
+  const targetTextNodes = [];
+  let currentNode;
+  while((currentNode = walker.nextNode())){
+    targetTextNodes.push(currentNode);
+  }
+
+  for(const textNode of targetTextNodes){
+    const originalText = textNode.nodeValue || '';
+    queryRe.lastIndex = 0;
+    const fragment = document.createDocumentFragment();
+    let lastIndex = 0;
+    let match;
+
+    while((match = queryRe.exec(originalText))){
+      const start = match.index;
+      if(start > lastIndex){
+        fragment.append(originalText.slice(lastIndex, start));
+      }
+      const mark = document.createElement('mark');
+      mark.className = 'search-hit';
+      mark.textContent = match[0];
+      fragment.append(mark);
+      lastIndex = start + match[0].length;
+    }
+
+    if(lastIndex < originalText.length){
+      fragment.append(originalText.slice(lastIndex));
+    }
+
+    if(textNode.parentNode){
+      textNode.parentNode.replaceChild(fragment, textNode);
+    }
   }
 }
 
-function postHasMedia(p){
-  return Array.isArray(p.media) && p.media.length > 0;
-}
+function applySearchFilter(){
+  const normalizedQuery = uiState.searchQuery.trim().toLowerCase();
+  let filteredPosts = uiState.posts;
 
-function applyFilters(){
-  const q = state.query.trim().toLowerCase();
-  const mf = state.filter;
-
-  let arr = state.posts;
-
-  if(mf === 'withMedia'){
-    arr = arr.filter(p => postHasMedia(p));
-  } else if(mf === 'textOnly'){
-    arr = arr.filter(p => !postHasMedia(p));
+  if(normalizedQuery){
+    filteredPosts = filteredPosts.filter((post) => (post.text || '').toLowerCase().includes(normalizedQuery));
   }
 
-  if(q){
-    arr = arr.filter(p => (p.text || '').toLowerCase().includes(q));
-  }
-
-  state.filtered = arr;
-  state.rendered = 0;
-  el('posts').innerHTML = '';
+  uiState.filteredPosts = filteredPosts;
+  uiState.renderedCount = 0;
+  getById('posts').innerHTML = '';
 }
 
-function handleHashtagClick(tag){
-  const input = el('searchInput');
+function onHashtagClick(tag){
+  const searchInput = getById('searchInput');
   const normalized = normalizeHashtag(tag);
-  if(!input || !normalized) return;
+  if(!searchInput || !normalized) return;
 
-  input.value = normalized;
-  state.query = normalized;
-  applyFilters();
-  renderNextPage();
-  input.focus();
+  searchInput.value = normalized;
+  uiState.searchQuery = normalized;
+  applySearchFilter();
+  renderNextPostsPage();
+  searchInput.focus();
 }
 
-function initialQuery(){
+function readInitialQueryFromUrl(){
   try{
     const params = new URLSearchParams(window.location.search);
-    const q = params.get('q') || params.get('search') || params.get('tag');
-    return q ? q.trim() : '';
+    const rawQuery = params.get('q') || params.get('search') || params.get('tag');
+    return rawQuery ? rawQuery.trim() : '';
   }catch(e){
     return '';
   }
 }
 
-function imagesForPost(post){
-  if(!post || !Array.isArray(post.media)) return [];
-  return post.media.filter(Common.isImageMedia).map((m) => ({
-    src: `./${m.path}`,
-    alt: m.name || '',
-  }));
-}
 
-function ensureLightbox(){
-  let lb = document.getElementById('lightbox');
-  if(lb) return lb;
-  lb = document.createElement('div');
-  lb.id = 'lightbox';
-  lb.className = 'lightbox';
-  lb.innerHTML = `
-    <div class="lightbox-inner">
-      <button class="lightbox-btn lightbox-close" type="button" aria-label="Закрыть">✕</button>
-      <div class="lightbox-nav">
-        <button class="lightbox-btn lightbox-prev" type="button" aria-label="Предыдущее">‹</button>
-        <button class="lightbox-btn lightbox-next" type="button" aria-label="Следующее">›</button>
-      </div>
-      <img id="lightboxImage" alt="" />
-      <div class="lightbox-counter" id="lightboxCounter"></div>
-    </div>
-  `;
-  document.body.appendChild(lb);
+function renderNextPostsPage(){
+  const container = getById('posts');
+  const postsSlice = uiState.filteredPosts.slice(
+    uiState.renderedCount,
+    uiState.renderedCount + uiState.pageSize,
+  );
 
-  lb.addEventListener('click', (e) => {
-    if(e.target === lb) closeLightbox();
-  });
-  lb.querySelector('.lightbox-close')?.addEventListener('click', () => closeLightbox());
-  lb.querySelector('.lightbox-prev')?.addEventListener('click', () => stepLightbox(-1));
-  lb.querySelector('.lightbox-next')?.addEventListener('click', () => stepLightbox(1));
-  document.addEventListener('keydown', onLightboxKey);
-  return lb;
-}
-
-function onLightboxKey(e){
-  const lb = document.getElementById('lightbox');
-  if(!lb || !lb.classList.contains('visible')) return;
-  if(e.key === 'Escape'){ closeLightbox(); }
-  else if(e.key === 'ArrowLeft'){ stepLightbox(-1); }
-  else if(e.key === 'ArrowRight'){ stepLightbox(1); }
-}
-
-function showLightbox(){
-  const lb = ensureLightbox();
-  const img = document.getElementById('lightboxImage');
-  const counter = document.getElementById('lightboxCounter');
-  const item = lightboxState.items[lightboxState.index];
-  if(!item){
-    closeLightbox();
-    return;
-  }
-  img.src = item.src;
-  img.alt = item.alt || '';
-  if(counter){
-    counter.textContent = `${lightboxState.index + 1} / ${lightboxState.items.length}`;
-  }
-  lb.classList.add('visible');
-}
-
-function closeLightbox(){
-  const lb = document.getElementById('lightbox');
-  if(lb){
-    lb.classList.remove('visible');
-  }
-  lightboxState.postId = null;
-  lightboxState.index = 0;
-  lightboxState.items = [];
-}
-
-function stepLightbox(delta){
-  if(!lightboxState.items.length) return;
-  lightboxState.index = (lightboxState.index + delta + lightboxState.items.length) % lightboxState.items.length;
-  showLightbox();
-}
-
-function openLightbox(postId, imageIndex){
-  const key = String(postId);
-  const post = state.postIndex.get(key) || state.postIndex.get(Number(postId));
-  if(!post) return;
-  const items = imagesForPost(post);
-  if(!items.length) return;
-  const idx = Math.max(0, Math.min(imageIndex || 0, items.length - 1));
-  lightboxState.postId = postId;
-  lightboxState.index = idx;
-  lightboxState.items = items;
-  showLightbox();
-}
-
-function renderNextPage(){
-  const container = el('posts');
-  const slice = state.filtered.slice(state.rendered, state.rendered + state.pageSize);
-
-  for(const p of slice){
+  for(const post of postsSlice){
     const card = document.createElement('article');
     card.className = 'post';
 
-    const tgLink = p.link ? `<a href="${Common.escapeHtml(p.link)}" target="_blank" rel="noopener">Открыть в Telegram</a>` : '';
-    const permalink = `./post.html?id=${encodeURIComponent(p.id)}`;
-    const dateLabel = Common.escapeHtml(formatLocalDate(p.date));
-    const actionLinks = [tgLink, `<a href="${permalink}">Открыть пост на сайте</a>`].filter(Boolean).join(' · ');
-    const views = (typeof p.views === 'number') ? `${p.views.toLocaleString('ru-RU')} просмотров` : '';
-    const reactions = (p.reactions && p.reactions.total) ? `${p.reactions.total.toLocaleString('ru-RU')} реакций` : '';
+    const telegramLink = post.link
+      ? `<a href="${Common.escapeHtml(post.link)}" target="_blank" rel="noopener">Открыть в Telegram</a>`
+      : '';
+    const permalink = `./post.html?id=${encodeURIComponent(post.id)}`;
+    const dateLabel = Common.escapeHtml(formatLocalDate(post.date));
+    const actionLinks = [telegramLink, `<a href="${permalink}">Открыть пост на сайте</a>`]
+      .filter(Boolean)
+      .join(' · ');
+    const views = (typeof post.views === 'number') ? `${post.views.toLocaleString('ru-RU')} просмотров` : '';
+    const reactions = (post.reactions && post.reactions.total) ? `${post.reactions.total.toLocaleString('ru-RU')} реакций` : '';
 
     const header = `
       <div class="post-header">
@@ -198,22 +171,27 @@ function renderNextPage(){
       </div>
     `;
 
-    const bodyHtml = (p.html && p.html.trim().length > 0)
-      ? p.html
-      : (p.text ? `<p>${Common.escapeHtml(p.text).replaceAll('\n','<br>')}</p>` : '<p class="muted">[без текста]</p>');
+    const bodyHtml = (post.html && post.html.trim().length > 0)
+      ? post.html
+      : (post.text
+        ? `<p>${Common.escapeHtml(post.text).replaceAll('\n','<br>')}</p>`
+        : '<p class="muted">[без текста]</p>');
 
     let mediaHtml = '';
-    if(Array.isArray(p.media) && p.media.length){
-      let imageIdx = 0;
-      const parts = p.media.map((m) => {
-        const html = Common.renderMediaItem(m, p.id, Common.isImageMedia(m) ? imageIdx : null);
-        if(Common.isImageMedia(m)){
-          imageIdx += 1;
+    const mediaList = Array.isArray(post.media) ? Common.dedupeMedia(post.media) : [];
+    if(mediaList.length){
+      let imageIndex = 0;
+      const renderedMedia = mediaList.map((mediaItem) => {
+        const isImage = Common.isImageMedia(mediaItem);
+        const html = Common.renderMediaItem(mediaItem, post.id, isImage ? imageIndex : null);
+        if(isImage){
+          imageIndex += 1;
         }
         return html;
       }).filter(Boolean);
-      if(parts.length){
-        mediaHtml = `<div class="media">${parts.join('')}</div>`;
+
+      if(renderedMedia.length){
+        mediaHtml = `<div class="media">${renderedMedia.join('')}</div>`;
       }
     }
 
@@ -226,40 +204,104 @@ function renderNextPage(){
 
     card.innerHTML = header + `<div class="post-body">${bodyHtml}${mediaHtml}</div>` + actions;
     Common.linkifyHashtags(card);
+    highlightSearchMatchesInCard(card, uiState.searchQuery);
     container.appendChild(card);
   }
 
-  state.rendered += slice.length;
+  uiState.renderedCount += postsSlice.length;
 
-  const left = state.filtered.length - state.rendered;
-  const btn = el('loadMoreBtn');
-  btn.disabled = left <= 0;
-  btn.textContent = left > 0 ? `Показать ещё (${left})` : 'Больше нет постов';
+  const remaining = uiState.filteredPosts.length - uiState.renderedCount;
+  const loadMoreButton = getById('loadMoreBtn');
+  loadMoreButton.disabled = remaining <= 0;
+  loadMoreButton.textContent = remaining > 0 ? `Показать ещё (${remaining})` : 'Больше нет постов';
 }
 
-async function loadAll(){
-  setStatus('Загрузка…');
+async function loadIndexData(){
+  setStatusText('Загрузка…');
 
   try{
-    const [metaRes, postsRes] = await Promise.all([
-      fetch(META_URL, { cache: 'no-store' }),
-      fetch(POSTS_URL, { cache: 'no-store' }),
-    ]);
+    const configRequest = fetch(CONFIG_URL, { cache: 'no-store' }).catch(() => null);
+    const metaRequest = fetch(META_URL, { cache: 'no-store' }).catch(() => null);
 
-    const meta = metaRes.ok ? await metaRes.json() : {};
-    const posts = postsRes.ok ? await postsRes.json() : [];
+    const configResponse = await configRequest;
+    const config = configResponse && configResponse.ok ? await configResponse.json() : {};
 
-    state.posts = Array.isArray(posts) ? posts : [];
-    state.postIndex = new Map(state.posts.map(p => [String(p.id), p]));
-    // expected: newest first
-    applyFilters();
-    renderNextPage();
+    const configuredPageSize = Number(config.page_size || config.static_page_size);
+    if(Number.isFinite(configuredPageSize) && configuredPageSize > 0){
+      uiState.pageSize = configuredPageSize;
+    }
+
+    const customSubscribe = (config.channel_specific_link || '').trim();
+    if(customSubscribe){
+      subscribeLinkOverride = customSubscribe;
+    }
+
+    const promoText = (config.promo_text || '').trim();
+    if(promoText){
+      promoBannerHtml = promoText;
+    }
+    Common.initPromoBanner(promoBannerHtml);
+
+    const jsonPageSize = Number(config.json_page_size);
+    const jsonTotalPages = Number(config.json_total_pages);
+    if(Number.isFinite(jsonPageSize) && jsonPageSize > 0 && Number.isFinite(jsonTotalPages) && jsonTotalPages > 0){
+      uiState.jsonPages.size = jsonPageSize;
+      uiState.jsonPages.total = jsonTotalPages;
+    }
+
+    const metaResponse = await metaRequest;
+    const meta = metaResponse && metaResponse.ok ? await metaResponse.json() : {};
+    Common.bumpFavicons(meta.last_sync_utc || meta.last_seen_message_id || '');
+
+    let postsData = [];
+    let loadedViaJsonPages = false;
+
+    if(uiState.jsonPages.total > 0){
+      const allPages = [];
+      for(let pageNum = 1; pageNum <= uiState.jsonPages.total; pageNum++){
+        setStatusText(`Загрузка страниц (${pageNum}/${uiState.jsonPages.total})…`);
+        try{
+          const res = await fetch(`${DATA_PAGES_BASE}/page-${pageNum}.json`, { cache: 'no-store' });
+          if(!res.ok) throw new Error(`Page ${pageNum} not found`);
+          const data = await res.json();
+          if(Array.isArray(data)) allPages.push(...data);
+        }catch(e){
+          console.warn('Paging load failed, will fall back to posts.json', e);
+          allPages.length = 0;
+          break;
+        }
+      }
+
+      if(allPages.length){
+        postsData = allPages;
+        loadedViaJsonPages = true;
+      }
+    }
+
+    if(!loadedViaJsonPages){
+      setStatusText('Загрузка всех постов…');
+      const postsResponse = await fetch(POSTS_URL, { cache: 'no-store' });
+      postsData = postsResponse.ok ? await postsResponse.json() : [];
+    }
+
+    const rawPosts = Array.isArray(postsData) ? postsData : [];
+    // Ensure newest-first order for UI (storage keeps oldest->newest).
+    uiState.posts = rawPosts.slice().sort((a, b) => Number(b.id) - Number(a.id));
+    uiState.postById = new Map(uiState.posts.map((post) => [String(post.id), post]));
+
+    applySearchFilter();
+    renderNextPostsPage();
 
     // meta UI
     const title = meta.title || 'Telegram Mirror';
-    el('siteTitle').textContent = title;
+    getById('siteTitle').textContent = title;
     document.title = title;
-    const avatar = el('channelAvatar');
+
+    const avatar = getById('channelAvatar');
+    const channelUrl = meta.username
+      ? `https://t.me/${meta.username}`
+      : (meta.channel ? `https://t.me/${(meta.channel || '').replace(/^@/,'')}` : '#');
+
     if(avatar && meta.avatar){
       avatar.src = `./${meta.avatar}`;
       avatar.hidden = false;
@@ -268,81 +310,79 @@ async function loadAll(){
       avatar.hidden = true;
     }
 
-    let channelUrl = '#';
-    if(meta.username){
-      channelUrl = `https://t.me/${meta.username}`;
-    } else if(meta.channel){
-      const clean = meta.channel.replace(/^@/, '');
-      channelUrl = meta.channel.startsWith('http') ? meta.channel : `https://t.me/${clean}`;
+    const avatarLink = getById('channelAvatarLink');
+    if(avatarLink){
+      avatarLink.hidden = !meta.avatar;
     }
-    const subscribe = el('subscribeBtn');
-    if(subscribe){
-      if(channelUrl && channelUrl !== '#'){
-        subscribe.href = channelUrl;
-        subscribe.hidden = false;
+
+    const subscribeButton = getById('subscribeBtn');
+    if(subscribeButton){
+      const subscribeLink = (subscribeLinkOverride || channelUrl || '').trim();
+      if(subscribeLink && subscribeLink !== '#'){
+        subscribeButton.href = subscribeLink;
+        subscribeButton.hidden = false;
       } else {
-        subscribe.hidden = true;
+        subscribeButton.hidden = true;
       }
     }
 
-    // repo link (best effort)
-    if(location.hostname.endsWith('github.io')){
-      const user = location.hostname.split('.')[0];
-      const repo = location.pathname.replaceAll('/', '').trim();
-      if(user && repo){
-        el('repoLink').href = `https://github.com/${user}/${repo}`;
-        el('repoLink').textContent = 'GitHub';
-      }else{
-        el('repoLink').href = '#';
-      }
-    } else {
-      el('repoLink').href = '#';
-    }
+    // `siteTitleWrap` href is set by Common.applyHomeLinks() so GitHub Pages
+    // project sites (https://<user>.github.io/<repo>/) work correctly.
 
-    setStatus('', 'notice-ok');
+    // Keep the title visible on narrow screens by compacting the subscribe button when needed.
+    Common.initResponsiveHeader();
+
+    setStatusText('', 'notice-ok');
   }catch(err){
     console.error(err);
-    setStatus('Ошибка загрузки данных. Проверьте, что docs/data/posts.json доступен и валиден.', 'notice-bad');
+    setStatusText('Ошибка загрузки данных. Проверьте, что docs/data/posts.json доступен и валиден.', 'notice-bad');
   }
 }
 
-function bindUI(){
-  const themeBtn = Common.el('themeToggle');
-  if(themeBtn){
-    themeBtn.addEventListener('click', () => Common.toggleTheme());
+function bindIndexUi(){
+  const themeButton = getById('themeToggle');
+  if(themeButton){
+    themeButton.addEventListener('click', () => Common.toggleTheme());
   }
 
-  Common.el('searchInput').addEventListener('input', (e) => {
-    state.query = e.target.value || '';
-    applyFilters();
-    renderNextPage();
+  getById('searchInput').addEventListener('input', (e) => {
+    uiState.searchQuery = e.target.value || '';
+    applySearchFilter();
+    renderNextPostsPage();
   });
 
-  Common.el('loadMoreBtn').addEventListener('click', () => renderNextPage());
+  getById('loadMoreBtn').addEventListener('click', () => renderNextPostsPage());
 
-  Common.el('posts').addEventListener('click', (e) => {
-    const target = e.target;
-    const tagNode = target && typeof target.closest === 'function' ? target.closest('.hashtag') : null;
-    if(tagNode){
+  getById('posts').addEventListener('click', (e) => {
+    const clickedElement = e.target;
+    const hashtagLink = clickedElement && typeof clickedElement.closest === 'function'
+      ? clickedElement.closest('.hashtag')
+      : null;
+
+    if(hashtagLink){
       e.preventDefault();
-      handleHashtagClick(tagNode.getAttribute('data-tag') || tagNode.textContent);
+      onHashtagClick(hashtagLink.getAttribute('data-tag') || hashtagLink.textContent);
       return;
     }
-    if(target && target.classList && target.classList.contains('media-img')){
-      const postId = target.getAttribute('data-post-id');
-      const idx = Number(target.getAttribute('data-image-index') || 0);
-      const post = state.postIndex.get(String(postId)) || state.postIndex.get(Number(postId));
-      Common.openLightboxForPost(post, Number.isNaN(idx) ? 0 : idx);
+
+    if(clickedElement && clickedElement.classList && clickedElement.classList.contains('media-img')){
+      const postId = clickedElement.getAttribute('data-post-id');
+      const imageIndex = Number(clickedElement.getAttribute('data-image-index') || 0);
+      const post = uiState.postById.get(String(postId)) || uiState.postById.get(Number(postId));
+      Common.openLightboxForPost(post, Number.isNaN(imageIndex) ? 0 : imageIndex);
     }
   });
 }
 
 Common.initTheme();
-bindUI();
-const seededQuery = initialQuery();
+Common.applyHomeLinks();
+bindIndexUi();
+
+const seededQuery = readInitialQueryFromUrl();
 if(seededQuery){
-  const input = Common.el('searchInput');
+  const input = getById('searchInput');
   if(input) input.value = seededQuery;
-  state.query = seededQuery;
+  uiState.searchQuery = seededQuery;
 }
-loadAll();
+
+loadIndexData();

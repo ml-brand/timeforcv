@@ -1,164 +1,102 @@
-# Telegram → GitHub Pages Mirror (fully automated)
+# Telegram → GitHub Pages Mirror
 
-This repository:
-- pulls posts from a Telegram channel every hour via GitHub Actions,
-- stores them in `docs/data/posts.json` (+ meta in `docs/data/meta.json`),
-- optionally downloads media into `docs/assets/media/`,
-- renders everything as a static site on GitHub Pages.
+Fully automated Telegram channel mirror that syncs posts (plus media) into `docs/` and serves them on GitHub Pages — no servers, just Actions.
 
-## What you get
+## Highlights
+- Hourly GitHub Actions sync with editable cron (`.github/workflows/sync.yml`).
+- Dynamic UI (`docs/index.html`) with search, hashtag filters, lightbox gallery, and load-more pagination.
+- Static snapshot (`docs/static/`) rendered ahead of time for fast, JS-free browsing.
+- RSS/Atom feeds, sitemap, robots.txt, channel avatar download, and favicon generation from the avatar.
+- Optional media download with size/scope limits to keep the repo lean.
 
-- Static page `docs/index.html` with search and paginated load-more.
-- Auto-sync on a cron schedule (hourly; subject to GitHub timing jitter).
-- No separate server required.
-
----
-
-## 1) One-time setup
-
-### 1.1. Create Telegram API ID / API Hash
-Do this at https://my.telegram.org (API Development Tools).
-
-You need:
-- `TG_API_ID` (integer)
-- `TG_API_HASH` (string)
-
-### 1.2. Create `TG_SESSION` (StringSession)
-Locally:
-
+## Quick start (local setup)
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python scripts/create_session.py
+PYTHONPATH=. python scripts/create_session.py   # produce TG_SESSION (StringSession)
 ```
+What you need from https://my.telegram.org (API Development Tools):
+- `TG_API_ID` (GitHub **Secrets**)
+- `TG_API_HASH` (GitHub **Secrets**)
+- `TG_SESSION` (output of the script, GitHub **Secrets**)
+- `TG_CHANNEL` (e.g. `mychannel` or `https://t.me/mychannel`, GitHub **Variables**)
 
-The script will ask you to log in to Telegram (phone, code, 2FA if enabled) and print a session string.
-Copy it fully — that is your `TG_SESSION`.
+## Deploy on GitHub
+1) Push the repo.  
+2) Repo → Settings → Secrets and variables → Actions:  
+   - **Secrets**: add `TG_API_ID`, `TG_API_HASH`, `TG_SESSION`.  
+   - **Variables**: add `TG_CHANNEL`.  
+3) Repo → Settings → Actions → General → Workflow permissions → **Read and write permissions**.  
+4) Repo → Settings → Pages: Source **Deploy from a branch**, branch `main`, folder `/docs`.  
+5) Run the workflow “Sync Telegram channel to GitHub Pages” manually once; only after that open the site.  
+   RSS/Atom feeds and `docs/static/` are generated only if the repo variables `FEED` and `GENERATE_STATIC` are enabled.  
+   Make sure required Secrets/Variables are set; otherwise CI will fail.
 
-Tip: use a dedicated Telegram account if you don’t want to expose your personal one.
-
----
-
-## 2) Configure the GitHub repo
-
-### 2.1. Push the project to GitHub
-Create a repo and push the contents.
-
-### 2.2. Add Secrets
-Repository → Settings → Secrets and variables → Actions → **Secrets**:
-
-- `TG_API_ID`
-- `TG_API_HASH`
-- `TG_SESSION`
-- `TG_CHANNEL`
-
-`TG_CHANNEL` is the channel username without `@`, e.g. `mychannel`.
-`@mychannel` or `https://t.me/mychannel` also work.
-
-If Actions can’t push commits (permission denied), check:
-Settings → Actions → General → **Workflow permissions** → choose **Read and write permissions**.
-
-Important: the account behind `TG_SESSION` must access the channel:
-- public channel — being a subscriber is enough,
-- private channel — must be a member (with history access).
-
----
-
-## 3) Enable GitHub Pages
-
-Repository → Settings → Pages:
-- Source: **Deploy from a branch**
-- Branch: `main`
-- Folder: `/docs`
-
-Your site will be available at:
-`https://<username>.github.io/<repo>/`
-
----
-
-## 4) Run the sync
-
-- Manual: Actions → “Sync Telegram channel to GitHub Pages” → Run workflow.
-- Automatic: hourly on schedule.
-
----
-
-## Sync settings (optional)
-
-Key parameters live in `.github/workflows/sync.yml` (env section of **Fetch Telegram posts** step).
-
-- `DOWNLOAD_MEDIA`: `true/false` — download media into the repo.
-- `MEDIA_MAX_MB`: max file size to download (default 200 MB).
-- `MEDIA_DOWNLOAD_SCOPE`: how many media download attempts per run (default 200).
-- `INITIAL_FETCH_LIMIT`:
-  - `0` = import full history (can take time on large channels),
-  - `2000` = import only the latest 2000 posts (faster).
-- `REFRESH_LAST_N`: re-fetch last N messages every run to catch edits (default 500).
-- Timestamps are stored in UTC in JSON/feeds and rendered in the browser’s local timezone.
-
----
-
-## Where data lives
-
-- `docs/data/posts.json` — list of posts (newest first).
-- `docs/data/meta.json` — channel info and sync stats.
-- `docs/assets/media/` — downloaded files (if enabled).
-- `docs/feed.xml` (RSS) and `docs/atom.xml` (Atom) — last 50 posts, generated automatically.
-- `docs/sitemap.xml` — sitemap for search engines.
-- `docs/assets/channel_avatar.jpg` — channel avatar (if available).
-
-## Schema versioning
-
-- `meta.json` includes `meta_schema_version` and `posts_schema_version` (current `1.0.0`). Update these when changing data shape (e.g., adding tags/lang/embedding ids). See `CHANGELOG.md` for notes.
-
-## RSS/Atom
-
-- After each `scripts/fetch_telegram.py` run, `feed.xml` (RSS 2.0) and `atom.xml` (Atom 1.0) appear in `docs` based on `posts.json`.
-- To point feed/sitemap links to your published site, set `FEED_SITE_URL` (or `SITE_URL`) — e.g. `https://username.github.io/repo/`. Otherwise links point to the original Telegram post.
-
-## Sitemap
-
-- `sitemap.xml` is generated with the feeds and includes the home page, feeds, and post links (default cap: 1000 latest posts).
-
-## Robots.txt
-
-- `robots.txt` is generated automatically and allows indexing; it contains links to sitemap and feeds. To point to your domain, set `FEED_SITE_URL`/`SITE_URL`.
-
----
-
-## Caveats and notes
-
-1) **“Hourly” accuracy**  
-GitHub may shift scheduled workflow start times. Usually it’s minutes, but not guaranteed.
-
-2) **Repository size**  
-Downloading lots of media (especially video) will grow the repo quickly. For heavy channels consider:
-- `DOWNLOAD_MEDIA=false` (text + Telegram link only), or
-- raising limits/moving media elsewhere.
-
-3) **Private channels**  
-GitHub Pages is public if the repo is public.  
-If the data is private, do not publish it in a public repo.
-
----
-
-## Local run (for testing)
-
+## Run locally (sync + serve)
 ```bash
 export TG_API_ID=...
 export TG_API_HASH=...
 export TG_SESSION=...
 export TG_CHANNEL=mychannel
 
-python scripts/fetch_telegram.py
+PYTHONPATH=. python scripts/fetch_telegram.py         # fetch posts/media, write docs/data + assets
+PYTHONPATH=. python scripts/build_feeds.py            # regenerate feed/sitemap/robots from saved data
+PYTHONPATH=. python scripts/build_static.py           # optional: pre-render static HTML into docs/static/
 python -m http.server --directory docs 8000
 # open http://localhost:8000
-# CLI overrides examples:
-# python scripts/fetch_telegram.py --dry-run --refresh-last-n 100 --initial-limit 2000 --site-url https://username.github.io/repo/
+```
+CLI overrides (examples):
+```bash
+PYTHONPATH=. python scripts/fetch_telegram.py --dry-run --refresh-last-n 200 --initial-limit 2000
 ```
 
----
+## Config knobs (env or workflow vars)
+Required:
+- `TG_API_ID` (Secrets): Telegram API ID.
+- `TG_API_HASH` (Secrets): Telegram API hash.
+- `TG_SESSION` (Secrets): Telethon `StringSession`.
+- `TG_CHANNEL` (Variables): channel username or `https://t.me/<channel>`.
+
+UI / frontend:
+- `TG_CHANNEL_SPECIFIC_LINK`: override the Subscribe button URL.
+- `PROMO_TEXT`: promo banner HTML/text (shown on index and post pages).
+- `METRIKA_ID`: Yandex Metrika counter id.
+
+Sync tuning:
+- `DOWNLOAD_MEDIA` (`true`/`false`): store media in `docs/assets/media/`.
+- `MEDIA_MAX_MB`: max file size to download (default 200).
+- `MEDIA_DOWNLOAD_SCOPE`: max media download attempts per run (default 1000).
+- `INITIAL_FETCH_LIMIT`: `0` = full history; set >0 to cap initial import (default 1000).
+- `REFRESH_LAST_N`: re-fetch recent messages to catch edits (default 200).
+- `MAX_RETRIES`: RPC/timeout retry attempts (default 5).
+- `BACKOFF_SECONDS`: initial retry backoff with exponential growth (default 2.0).
+- `LOG_LEVEL`: logging verbosity (default `INFO`).
+
+Workflow toggles (repo variables):
+- `GENERATE_STATIC`: pre-rendered static snapshot (default off).
+- `SEO`: toggles sitemap/robots; maps to `GENERATE_SITE_FILES` env.
+- `FEED`: toggles RSS/Atom; maps to `GENERATE_FEEDS` env.
+- `GENERATE_SITE_FILES`: sitemap/robots generation (default off; when off, `robots.txt` has `Disallow: /`).
+- `GENERATE_FEEDS`: RSS/Atom generation (default off).
+
+## What lives where
+- `docs/data/posts.json` — posts (newest-first in UI; stored oldest→newest on disk).
+- `docs/data/meta.json` — channel info, stats, last seen ID, avatar path.
+- `docs/assets/media/` — downloaded media; thumbnails under `thumbs/`.
+- `docs/assets/channel_avatar.jpg` — channel avatar; also drives favicons (`docs/favicon.ico`, `favicon-32.png`, `apple-touch-icon.png`).
+- `docs/feed.xml`, `docs/atom.xml`, `docs/sitemap.xml`, `docs/robots.txt` — generated site files.
+- `docs/static/` — pre-rendered index + paginated pages + per-post pages.
+
+## How it works
+- `scripts/fetch_telegram.py`: pulls messages, merges albums, downloads media (if enabled), writes `posts.json`/`meta.json`, generates feeds/sitemap/robots (unless disabled).
+- `scripts/build_static.py`: renders static HTML snapshot from stored data.
+- GitHub Actions (`.github/workflows/sync.yml`): installs deps, fetches posts, detects data/media changes, builds static snapshot when needed, commits, and pushes.
+
+## Tips & caveats
+- “Hourly” schedule is approximate; GitHub may drift by a few minutes.
+- Large media can bloat the repo. For heavy channels set `DOWNLOAD_MEDIA=false` or lower `MEDIA_MAX_MB` / `MEDIA_DOWNLOAD_SCOPE`.
+- Private channels: ensure the account behind `TG_SESSION` has access (subscriber/member); remember GitHub Pages is public if the repo is public.
 
 ## License
-CPAL-1.0 — see `LICENSE` for full terms (requires attribution).
+CPAL-1.0 — see `LICENSE` for full terms (attribution required).

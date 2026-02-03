@@ -2,40 +2,27 @@
 
 const POSTS_URL = './data/posts.json';
 const META_URL = './data/meta.json';
-const Common = window.Common;
-const { el, normalizeHashtag } = Common;
+const CONFIG_URL = './data/config.json';
+const DATA_PAGES_BASE = './data/pages';
 
-const state = {
+const Common = window.Common;
+const {
+  el: getById,
+  normalizeHashtag,
+  setStatus: setStatusText,
+  formatLocalDate,
+} = Common;
+
+const uiState = {
   posts: [],
-  postIndex: new Map(),
-  current: null,
+  postById: new Map(),
+  currentPost: null,
 };
 
-function setStatus(text, kind){
-  const box = el('status');
-  if(!box) return;
-  if(!text){
-    box.textContent = '';
-    box.className = 'status';
-    box.style.display = 'none';
-    return;
-  }
-  box.textContent = text;
-  box.className = 'status' + (kind ? ' ' + kind : '');
-  box.style.display = '';
-}
+let subscribeLinkOverride = '';
+let promoBannerHtml = '';
 
-function formatLocalDate(iso){
-  if(!iso) return '—';
-  try{
-    const d = new Date(iso);
-    return d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
-  }catch(e){
-    return iso;
-  }
-}
-
-function goToSearch(tag){
+function navigateToIndexWithTag(tag){
   const normalized = normalizeHashtag(tag);
   if(!normalized) return;
   try{
@@ -50,97 +37,14 @@ function goToSearch(tag){
   }
 }
 
-function openLightboxForId(postId, imageIndex){
+function openLightboxForPostId(postId, imageIndex){
   const key = String(postId);
-  const post = state.postIndex.get(key) || state.postIndex.get(Number(postId));
+  const post = uiState.postById.get(key) || uiState.postById.get(Number(postId));
   if(!post) return;
   Common.openLightboxForPost(post, imageIndex);
 }
 
-function ensureLightbox(){
-  let lb = document.getElementById('lightbox');
-  if(lb) return lb;
-  lb = document.createElement('div');
-  lb.id = 'lightbox';
-  lb.className = 'lightbox';
-  lb.innerHTML = `
-    <div class="lightbox-inner">
-      <button class="lightbox-btn lightbox-close" type="button" aria-label="Закрыть">✕</button>
-      <div class="lightbox-nav">
-        <button class="lightbox-btn lightbox-prev" type="button" aria-label="Предыдущее">‹</button>
-        <button class="lightbox-btn lightbox-next" type="button" aria-label="Следующее">›</button>
-      </div>
-      <img id="lightboxImage" alt="" />
-      <div class="lightbox-counter" id="lightboxCounter"></div>
-    </div>
-  `;
-  document.body.appendChild(lb);
-
-  lb.addEventListener('click', (e) => {
-    if(e.target === lb) closeLightbox();
-  });
-  lb.querySelector('.lightbox-close')?.addEventListener('click', () => closeLightbox());
-  lb.querySelector('.lightbox-prev')?.addEventListener('click', () => stepLightbox(-1));
-  lb.querySelector('.lightbox-next')?.addEventListener('click', () => stepLightbox(1));
-  document.addEventListener('keydown', onLightboxKey);
-  return lb;
-}
-
-function onLightboxKey(e){
-  const lb = document.getElementById('lightbox');
-  if(!lb || !lb.classList.contains('visible')) return;
-  if(e.key === 'Escape'){ closeLightbox(); }
-  else if(e.key === 'ArrowLeft'){ stepLightbox(-1); }
-  else if(e.key === 'ArrowRight'){ stepLightbox(1); }
-}
-
-function showLightbox(){
-  const lb = ensureLightbox();
-  const img = document.getElementById('lightboxImage');
-  const counter = document.getElementById('lightboxCounter');
-  const item = lightboxState.items[lightboxState.index];
-  if(!item){
-    closeLightbox();
-    return;
-  }
-  img.src = item.src;
-  img.alt = item.alt || '';
-  if(counter){
-    counter.textContent = `${lightboxState.index + 1} / ${lightboxState.items.length}`;
-  }
-  lb.classList.add('visible');
-}
-
-function closeLightbox(){
-  const lb = document.getElementById('lightbox');
-  if(lb){
-    lb.classList.remove('visible');
-  }
-  lightboxState.postId = null;
-  lightboxState.index = 0;
-  lightboxState.items = [];
-}
-
-function stepLightbox(delta){
-  if(!lightboxState.items.length) return;
-  lightboxState.index = (lightboxState.index + delta + lightboxState.items.length) % lightboxState.items.length;
-  showLightbox();
-}
-
-function openLightbox(postId, imageIndex){
-  const key = String(postId);
-  const post = state.postIndex.get(key) || state.postIndex.get(Number(postId));
-  if(!post) return;
-  const items = imagesForPost(post);
-  if(!items.length) return;
-  const idx = Math.max(0, Math.min(imageIndex || 0, items.length - 1));
-  lightboxState.postId = postId;
-  lightboxState.index = idx;
-  lightboxState.items = items;
-  showLightbox();
-}
-
-function parsePostId(){
+function readPostIdFromUrl(){
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id') || params.get('post');
   if(id && String(id).trim()) return String(id).trim();
@@ -148,7 +52,7 @@ function parsePostId(){
   return hash || null;
 }
 
-function permalinkFor(id){
+function buildPermalink(id){
   try{
     const url = new URL(window.location.href);
     url.search = '';
@@ -161,11 +65,15 @@ function permalinkFor(id){
   }
 }
 
-function populateMeta(meta, post){
+function renderHeaderMeta(meta, post){
   const title = meta.title || 'Telegram Mirror';
-  el('siteTitle').textContent = title;
+  getById('siteTitle').textContent = title;
   document.title = post ? `${title} — пост #${post.id}` : `${title} — пост`;
-  const avatar = el('channelAvatar');
+  const channelUrl = meta.username
+    ? `https://t.me/${meta.username}`
+    : (meta.channel ? `https://t.me/${(meta.channel || '').replace(/^@/,'')}` : '#');
+
+  const avatar = getById('channelAvatar');
   if(avatar && meta.avatar){
     avatar.src = `./${meta.avatar}`;
     avatar.hidden = false;
@@ -174,28 +82,35 @@ function populateMeta(meta, post){
     avatar.hidden = true;
   }
 
-  let channelUrl = '#';
-  if(meta.username){
-    channelUrl = `https://t.me/${meta.username}`;
-  } else if(meta.channel){
-    const clean = meta.channel.replace(/^@/, '');
-    channelUrl = meta.channel.startsWith('http') ? meta.channel : `https://t.me/${clean}`;
+  Common.bumpFavicons(meta.last_sync_utc || meta.last_seen_message_id || '');
+
+  const avatarLink = getById('channelAvatarLink');
+  if(avatarLink){
+    avatarLink.hidden = !meta.avatar;
   }
-  const subscribe = el('subscribeBtn');
-  if(subscribe){
-    if(channelUrl && channelUrl !== '#'){
-      subscribe.href = channelUrl;
-      subscribe.hidden = false;
+
+  const subscribeButton = getById('subscribeBtn');
+  if(subscribeButton){
+    const subscribeLink = (subscribeLinkOverride || channelUrl || '').trim();
+    if(subscribeLink && subscribeLink !== '#'){
+      subscribeButton.href = subscribeLink;
+      subscribeButton.hidden = false;
     } else {
-      subscribe.hidden = true;
+      subscribeButton.hidden = true;
     }
   }
+
+  // `siteTitleWrap` href is set by Common.applyHomeLinks() so GitHub Pages
+  // project sites (https://<user>.github.io/<repo>/) work correctly.
+
+  // Keep the title visible on narrow screens by compacting the subscribe button when needed.
+  Common.initResponsiveHeader();
 
   // Meta badges removed from header; keep date in body only.
 }
 
 function renderPost(post){
-  const container = el('postContainer');
+  const container = getById('postContainer');
   if(!container) return;
 
   if(!post){
@@ -203,32 +118,43 @@ function renderPost(post){
     return;
   }
 
-  const tgLink = post.link ? `<a href="${Common.escapeHtml(post.link)}" target="_blank" rel="noopener">Открыть в Telegram</a>` : '';
+  const telegramLink = post.link
+    ? `<a href="${Common.escapeHtml(post.link)}" target="_blank" rel="noopener">Открыть в Telegram</a>`
+    : '';
+
   const views = (typeof post.views === 'number') ? `${post.views.toLocaleString('ru-RU')} просмотров` : '';
   const reactions = (post.reactions && post.reactions.total) ? `${post.reactions.total.toLocaleString('ru-RU')} реакций` : '';
-  const permalink = permalinkFor(post.id);
+  const permalink = buildPermalink(post.id);
   const dateLink = `<a class="post-date" href="${Common.escapeHtml(permalink)}">${Common.escapeHtml(formatLocalDate(post.date))}</a>`;
 
   const bodyHtml = (post.html && post.html.trim().length > 0)
     ? post.html
-    : (post.text ? `<p>${Common.escapeHtml(post.text).replaceAll('\n','<br>')}</p>` : '<p class="muted">[без текста]</p>');
+    : (post.text
+      ? `<p>${Common.escapeHtml(post.text).replaceAll('\n','<br>')}</p>`
+      : '<p class="muted">[без текста]</p>');
 
   let mediaHtml = '';
-  if(Array.isArray(post.media) && post.media.length){
-    let imageIdx = 0;
-    const parts = post.media.map((m) => {
-      const html = Common.renderMediaItem(m, post.id, Common.isImageMedia(m) ? imageIdx : null);
-      if(Common.isImageMedia(m)){
-        imageIdx += 1;
+  const mediaList = Array.isArray(post.media) ? Common.dedupeMedia(post.media) : [];
+  if(mediaList.length){
+    let imageIndex = 0;
+    const renderedMedia = mediaList.map((mediaItem) => {
+      const isImage = Common.isImageMedia(mediaItem);
+      const html = Common.renderMediaItem(mediaItem, post.id, isImage ? imageIndex : null);
+      if(isImage){
+        imageIndex += 1;
       }
       return html;
     }).filter(Boolean);
-    if(parts.length){
-      mediaHtml = `<div class="media">${parts.join('')}</div>`;
+
+    if(renderedMedia.length){
+      mediaHtml = `<div class="media">${renderedMedia.join('')}</div>`;
     }
   }
 
-  const links = [tgLink, `<a href="${Common.escapeHtml(permalink)}">Ссылка на этот пост</a>`].filter(Boolean).join(' · ');
+  const links = [telegramLink, `<a href="${Common.escapeHtml(permalink)}">Ссылка на этот пост</a>`]
+    .filter(Boolean)
+    .join(' · ');
+
   const actions = `
     <div class="actions">
       <span>${Common.escapeHtml([views, reactions].filter(Boolean).join(' · '))}</span>
@@ -245,18 +171,19 @@ function renderPost(post){
   `;
 
   Common.linkifyHashtags(container);
+  applySeoTags(post, permalink, bodyHtml);
 }
 
-function updateNav(post){
+function updatePrevNextNavigation(post){
   if(!post) return;
-  const idx = state.posts.findIndex(p => String(p.id) === String(post.id));
-  const newer = idx > 0 ? state.posts[idx - 1] : null;
-  const older = idx >= 0 && idx < state.posts.length - 1 ? state.posts[idx + 1] : null;
-  setNavLink(el('prevPost'), newer, '← Более новый');
-  setNavLink(el('nextPost'), older, 'Более старый →');
+  const idx = uiState.posts.findIndex((p) => String(p.id) === String(post.id));
+  const newer = idx > 0 ? uiState.posts[idx - 1] : null;
+  const older = idx >= 0 && idx < uiState.posts.length - 1 ? uiState.posts[idx + 1] : null;
+  setPrevNextLink(getById('prevPost'), newer, '← Более новый');
+  setPrevNextLink(getById('nextPost'), older, 'Более старый →');
 }
 
-function setNavLink(node, post, label){
+function setPrevNextLink(node, post, label){
   if(!node) return;
   if(post){
     node.href = `./post.html?id=${encodeURIComponent(post.id)}`;
@@ -271,78 +198,240 @@ function setNavLink(node, post, label){
   }
 }
 
-async function loadPostPage(){
-  setStatus('Загрузка…');
-  const targetId = parsePostId();
+async function loadSinglePostPage(){
+  setStatusText('Загрузка…');
+  const targetId = readPostIdFromUrl();
   if(!targetId){
-    setStatus('Не указан идентификатор поста.', 'notice-bad');
+    setStatusText('Не указан идентификатор поста.', 'notice-bad');
     return;
   }
 
   try{
-    const [metaRes, postsRes] = await Promise.all([
-      fetch(META_URL, { cache: 'no-store' }),
-      fetch(POSTS_URL, { cache: 'no-store' }),
-    ]);
+    const configRequest = fetch(CONFIG_URL, { cache: 'no-store' }).catch(() => null);
+    const metaRequest = fetch(META_URL, { cache: 'no-store' }).catch(() => null);
 
-    const meta = metaRes.ok ? await metaRes.json() : {};
-    const posts = postsRes.ok ? await postsRes.json() : [];
+    const configResponse = await configRequest;
+    const config = configResponse && configResponse.ok ? await configResponse.json() : {};
 
-    state.posts = Array.isArray(posts) ? posts : [];
-    state.postIndex = new Map(state.posts.map(p => [String(p.id), p]));
-
-    const post = state.postIndex.get(String(targetId)) || state.postIndex.get(Number(targetId));
-    state.current = post || null;
-
-    populateMeta(meta, post);
-    renderPost(post);
-    updateNav(post);
-    setStatus(post ? '' : 'Пост не найден.', post ? 'notice-ok' : 'notice-bad');
-
-    // repo link (best effort)
-    if(location.hostname.endsWith('github.io')){
-      const user = location.hostname.split('.')[0];
-      const parts = location.pathname.split('/').filter(Boolean);
-      const repo = parts[0] || '';
-      if(user && repo){
-        el('repoLink').href = `https://github.com/${user}/${repo}`;
-        el('repoLink').textContent = 'GitHub';
-      }else{
-        el('repoLink').href = '#';
-      }
-    } else {
-      el('repoLink').href = '#';
+    const customSubscribe = (config.channel_specific_link || '').trim();
+    if(customSubscribe){
+      subscribeLinkOverride = customSubscribe;
     }
+
+    const promoText = (config.promo_text || '').trim();
+    if(promoText){
+      promoBannerHtml = promoText;
+    }
+
+    Common.initPromoBanner(promoBannerHtml);
+    const metaResponse = await metaRequest;
+    const meta = metaResponse && metaResponse.ok ? await metaResponse.json() : {};
+
+    const totalPages = Number(config.json_total_pages);
+    const pageSize = Number(config.json_page_size);
+
+    let post = null;
+    let pageData = [];
+    let currentPage = null;
+
+    const fetchPage = async (pageNum) => {
+      const res = await fetch(`${DATA_PAGES_BASE}/page-${pageNum}.json`, { cache: 'no-store' });
+      if(!res.ok) throw new Error(`page ${pageNum} load failed`);
+      const data = await res.json();
+      if(!Array.isArray(data) || data.length === 0) throw new Error('page empty');
+      return data;
+    };
+
+    if(Number.isFinite(totalPages) && totalPages > 0 && Number.isFinite(pageSize) && pageSize > 0){
+      let low = 1;
+      let high = totalPages;
+      const targetNum = Number(targetId);
+
+      while(low <= high){
+        const mid = Math.floor((low + high) / 2);
+        let data;
+        try{
+          data = await fetchPage(mid);
+        }catch(err){
+          console.warn('Paging failed, fallback to posts.json', err);
+          low = high + 1;
+          break;
+        }
+
+        const firstId = Number(data[0]?.id ?? 0);
+        const lastId = Number(data[data.length - 1]?.id ?? 0);
+        if(firstId === 0 && lastId === 0){
+          break;
+        }
+
+        if(targetNum <= firstId && targetNum >= lastId){
+          pageData = data;
+          currentPage = mid;
+          break;
+        }
+
+        if(targetNum > firstId){
+          high = mid - 1;
+        } else {
+          low = mid + 1;
+        }
+      }
+
+      if(pageData.length){
+        uiState.posts = pageData;
+        uiState.postById = new Map(pageData.map((p) => [String(p.id), p]));
+        post = uiState.postById.get(String(targetId)) || null;
+
+        const idx = post ? pageData.findIndex((p) => String(p.id) === String(targetId)) : -1;
+
+        const loadNeighborPage = async (pageNum, pickFirst) => {
+          if(pageNum < 1 || pageNum > totalPages) return null;
+          const data = await fetchPage(pageNum);
+          return pickFirst ? data[0] : data[data.length - 1];
+        };
+
+        // Preload nav neighbors across pages.
+        if(idx === 0 && currentPage && currentPage > 1){
+          const newer = await loadNeighborPage(currentPage - 1, true);
+          if(newer) uiState.posts.unshift(newer);
+        }
+
+        if(idx === pageData.length - 1 && currentPage && currentPage < totalPages){
+          const older = await loadNeighborPage(currentPage + 1, false);
+          if(older) uiState.posts.push(older);
+        }
+      }
+    }
+
+    if(!post){
+      const postsResponse = await fetch(POSTS_URL, { cache: 'no-store' });
+      const posts = postsResponse.ok ? await postsResponse.json() : [];
+      const rawPosts = Array.isArray(posts) ? posts : [];
+      uiState.posts = rawPosts.slice().sort((a, b) => Number(b.id) - Number(a.id));
+      uiState.postById = new Map(uiState.posts.map((p) => [String(p.id), p]));
+      post = uiState.postById.get(String(targetId)) || uiState.postById.get(Number(targetId)) || null;
+    }
+
+    uiState.currentPost = post || null;
+    renderHeaderMeta(meta, post);
+    renderPost(post);
+    updatePrevNextNavigation(post);
+    setStatusText(post ? '' : 'Пост не найден.', post ? 'notice-ok' : 'notice-bad');
   }catch(err){
     console.error(err);
-    setStatus('Ошибка загрузки данных. Проверьте, что docs/data/posts.json доступен и валиден.', 'notice-bad');
+    setStatusText('Ошибка загрузки данных. Проверьте, что docs/data/posts.json доступен и валиден.', 'notice-bad');
   }
 }
 
-function bindUI(){
-  const themeBtn = el('themeToggle');
+function bindPostPageUi(){
+  const themeBtn = getById('themeToggle');
   if(themeBtn){
     themeBtn.addEventListener('click', () => Common.toggleTheme());
   }
-  const container = el('postContainer');
+
+  const container = getById('postContainer');
   if(container){
     container.addEventListener('click', (e) => {
-      const target = e.target;
-      const tagNode = target && typeof target.closest === 'function' ? target.closest('.hashtag') : null;
-      if(tagNode){
+      const clickedElement = e.target;
+      const hashtagLink = clickedElement && typeof clickedElement.closest === 'function'
+        ? clickedElement.closest('.hashtag')
+        : null;
+
+      if(hashtagLink){
         e.preventDefault();
-        goToSearch(tagNode.getAttribute('data-tag') || tagNode.textContent);
+        navigateToIndexWithTag(hashtagLink.getAttribute('data-tag') || hashtagLink.textContent);
         return;
       }
-      if(target && target.classList && target.classList.contains('media-img')){
-        const postId = target.getAttribute('data-post-id');
-        const idx = Number(target.getAttribute('data-image-index') || 0);
-        openLightboxForId(postId, Number.isNaN(idx) ? 0 : idx);
+
+      if(clickedElement && clickedElement.classList && clickedElement.classList.contains('media-img')){
+        const postId = clickedElement.getAttribute('data-post-id');
+        const imageIndex = Number(clickedElement.getAttribute('data-image-index') || 0);
+        openLightboxForPostId(postId, Number.isNaN(imageIndex) ? 0 : imageIndex);
       }
     });
   }
 }
 
+function applySeoTags(post, canonicalHref, bodyHtml){
+  const head = document.head;
+  if(!head || !post) return;
+
+  const ensureTag = (selector, create) => {
+    let node = head.querySelector(selector);
+    if(!node && create){
+      node = create();
+      head.appendChild(node);
+    }
+    return node;
+  };
+
+  const plainText = (bodyHtml || post.text || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  const description = (plainText || '').slice(0, 200);
+
+  const titleBase = Common.escapeHtml(getById('siteTitle')?.textContent || 'Telegram Mirror');
+  const pageTitle = `${titleBase} — пост #${post.id}`;
+
+  const canonical = post.link || canonicalHref || window.location.href;
+  const canonicalTag = ensureTag('link[rel="canonical"]', () => document.createElement('link'));
+  if(canonicalTag){
+    canonicalTag.setAttribute('rel', 'canonical');
+    canonicalTag.setAttribute('href', canonical);
+  }
+
+  document.title = pageTitle;
+
+  const setMeta = (name, content, attr = 'name') => {
+    if(!content) return;
+    const selector = `meta[${attr}="${name}"]`;
+    const node = ensureTag(selector, () => document.createElement('meta'));
+    if(node){
+      node.setAttribute(attr, name);
+      node.setAttribute('content', content);
+    }
+  };
+
+  setMeta('description', description);
+  setMeta('robots', 'index,follow');
+  setMeta('og:title', pageTitle, 'property');
+  setMeta('og:description', description, 'property');
+  setMeta('og:type', 'article', 'property');
+  setMeta('og:url', canonical, 'property');
+  setMeta('twitter:card', 'summary_large_image');
+  setMeta('twitter:title', pageTitle);
+  setMeta('twitter:description', description);
+
+  const firstImage = (post.media || []).find(Common.isImageMedia);
+  if(firstImage){
+    const imgPath = firstImage.thumb || firstImage.path;
+    if(imgPath){
+      const url = new URL(`./${imgPath}`, window.location.href).toString();
+      setMeta('og:image', url, 'property');
+      setMeta('twitter:image', url);
+    }
+  }
+
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: pageTitle,
+    description,
+    datePublished: post.date || '',
+    dateModified: post.edited || post.date || '',
+    mainEntityOfPage: canonical,
+  };
+
+  const ldNode = ensureTag('script[type="application/ld+json"]', () => {
+    const script = document.createElement('script');
+    script.setAttribute('type', 'application/ld+json');
+    return script;
+  });
+
+  if(ldNode){
+    ldNode.textContent = JSON.stringify(ld);
+  }
+}
+
 Common.initTheme();
-bindUI();
-loadPostPage();
+Common.applyHomeLinks();
+bindPostPageUi();
+loadSinglePostPage();

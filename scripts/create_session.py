@@ -19,6 +19,7 @@ from getpass import getpass
 from telethon import TelegramClient
 from telethon.sessions import StringSession
 
+
 def _prompt(name: str, secret: bool = False) -> str:
     env = os.getenv(name)
     if env:
@@ -26,6 +27,7 @@ def _prompt(name: str, secret: bool = False) -> str:
     if secret:
         return getpass(f"{name}: ")
     return input(f"{name}: ").strip()
+
 
 async def main() -> None:
     api_id_raw = _prompt("TG_API_ID")
@@ -39,11 +41,12 @@ async def main() -> None:
     print("\nLogin to Telegram. Use a dedicated account if you prefer.")
     async with TelegramClient(StringSession(), api_id, api_hash) as client:
         await client.start()  # will prompt for phone/code/password in console
-        s = client.session.save()
+        session_str = client.session.save()
         print("\n=== COPY THIS SESSION STRING ===\n")
-        print(s)
+        print(session_str)
         print("\n=== END ===\n")
         print("Save it as GitHub Secret: TG_SESSION")
+
 
 if __name__ == "__main__":
     asyncio.run(main())
