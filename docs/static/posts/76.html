@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #76</title>
+  <meta name="description" content=" Тематическая подборка статей за февраль: картиночные модели   Спешим со свежей подборкой интересных статей. В этот раз — о моделях для работы с изображениями. CLIP остаётся в центре внимания исследов" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/76.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #76" />
+  <meta property="og:description" content=" Тематическая подборка статей за февраль: картиночные модели   Спешим со свежей подборкой интересных статей. В этот раз — о моделях для работы с изображениями. CLIP остаётся в центре внимания исследов" />
+  
+  <meta property="article:published_time" content="2025-03-11T07:34:20+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary" />
+  
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../page-3.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../page-3.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=76" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="76">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-03-11T07:34:20+00:00">2025-03-11 07:34 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Тематическая подборка статей за февраль: картиночные модели</strong><br><br>Спешим со свежей подборкой интересных статей. В этот раз — о моделях для работы с изображениями. CLIP остаётся в центре внимания исследователей, но вопросы к его фичам не исчезают. Также делимся несколькими работами по архитектуре нейросетей и оптимизации для мобильных устройств.<br><br><strong>Image-to-Text</strong><br> <br><a href="https://arxiv.org/abs/2502.04263" rel="nofollow noopener noreferrer"><strong>Cross the Gap: Exposing the Intra-modal Misalignment in CLIP via Modality Inversion</strong></a><br>Статья подтверждает наше наблюдение, что фичи CLIP плохо подходят для image-to-image retrieval. Авторы углубляются в проблему, используя текстовую и картиночную инверсию, но практических решений не предлагают.<br> <br><a href="https://arxiv.org/abs/2502.03566" rel="nofollow noopener noreferrer"><strong>CLIP Behaves like a Bag-of-Words Model Cross-modally but not Uni-modally</strong></a><br>Исследователи показывают, что фичи CLIP ведут себя как «мешок слов» только при взаимодействии между доменами картинок и текстов, а внутри одного домена сохраняют структуру. Например, «синий куб и красный шар» ≠ «красный шар и синий куб» — то же верно и для изображений. Это значит, что проблема может быть не в самих эмбеддингах, а в их междоменном взаимодействии. Авторы предлагают обучить линейный слой с negative-текстами поверх текстовой модели — на синтетическом датасете этот подход показывает неплохие результаты.<br> <br><a href="https://arxiv.org/abs/2502.02977" rel="nofollow noopener noreferrer"><strong>Disentangling CLIP Features for Enhanced Localized Understanding</strong></a><br>В статье предлагают дополнительные лоссы, которые помогают «распутать» фичи CLIP. Авторы дообучают головы поверх текстовой и визуальной частей. Метод выглядит специфично, но к некоторым идеям стоит присмотреться.<br> <br><a href="https://arxiv.org/abs/2502.00965" rel="nofollow noopener noreferrer"><strong>CLIP-UP: A Simple and Efficient Mixture-of-Experts CLIP Training Recipe with Sparse Upcycling</strong></a><br>Модель инициализируется из обычного CLIP, но в каждом втором MLP-блоке заменяют слои на смесь из восьми экспертов, из которых активируются два. Для обучения предлагают использовать комбинацию из шести лоссов.<br> <br><strong>Архитектура</strong><br> <br><a href="https://arxiv.org/abs/2502.03738" rel="nofollow noopener noreferrer"><strong>Scaling Laws in Patchification: An Image Is Worth 50,176 Tokens And More</strong></a><br>В статье утверждают, что уменьшение размера патча в трансформерах с 16×16 до 1×1 улучшает качество модели. При этом для моделей, у которых уменьшен размер входного патча, не нужна сложная архитектура головы при адаптации под dense-задачи (например, сегментация и оценка глубины).<br> <br><a href="https://arxiv.org/abs/2501.15369" rel="nofollow noopener noreferrer"><strong>iFormer: Integrating ConvNet and Transformer for Mobile Application</strong></a><br>В статье описана архитектура со свёртками и аттеншном, заточенная под инференс на iPhone. Основой служит ConvNeXt, который дорабатывают, чтобы сделать сеть более лёгкой. Помимо этого, предлагают использовать слои аттешна с одной головой для модуляции карт признаков — было бы интересно сравнить это с более простым и популярным блоком «squeeze and excitation».<br><br><em>Подборку подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Артём Конев<br></em><a href="https://t.me/+955SbPNeKC5kMTAy" rel="nofollow noopener noreferrer">CV Time</a></div>
+      <div class="actions">
+        <span>2 498 просмотров · 19 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/76" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-3.html">К списку постов</a> · <a href="./76.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./77.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./75.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 76, "media": []}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #180</title>
+  <meta name="description" content=" Эволюция Florence: от генеративных моделей к MLLM   Сегодня разберём сразу две статьи о семействе моделей Florence: что такое Florence-2 и как авторы использовали её в VLM.    Florence-2: Advancing a" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/180.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #180" />
+  <meta property="og:description" content=" Эволюция Florence: от генеративных моделей к MLLM   Сегодня разберём сразу две статьи о семействе моделей Florence: что такое Florence-2 и как авторы использовали её в VLM.    Florence-2: Advancing a" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/180_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2025-09-18T09:03:44+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/180_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=180" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="180">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-09-18T09:03:44+00:00">2025-09-18 09:03 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Эволюция Florence: от генеративных моделей к MLLM<br></strong><br>Сегодня разберём сразу две статьи о семействе моделей Florence: что такое Florence-2 и как авторы использовали её в VLM.<br><br><a href="https://arxiv.org/abs/2311.06242" rel="nofollow noopener noreferrer"><strong>Florence-2: Advancing a Unified Representation for a Variety of Vision Tasks</strong></a> <br><br>Это cемейство VLM-моделей появилось в 2023 году. По сути, это и была VLM, хотя сам термин тогда ещё не вошёл в широкое употребление. Показательно, что в Florence-2 авторы сделали ставку не на архитектуру, а на огромный и качественно собранный датасет FLD-5B.<br><br>В основе архитектуры — обычная схема энкодер-декодер-трансформер. Разве что схему VLM авторы нарисовали не так, как принято в 2025-м.  <br><br>Вся суть статьи в пайплайне обработки данных. Авторы сформулировали множество разных задач в формате «текст на входе — текст на выходе». Так всю разметку можно условно поделить на три группы: <br><br>— понимание картинки в целом (classification, captioning, VQA) — семантика;<br>— умение локализовать объект (object detection, segmentation, referring expression comprehension) — геометрия; <br>— поиск и детекция объектов по набору признаков (text grounding) — семантика + геометрия.<br><br>Пайплайн обработки данных, с помощью которого получили обучающий датасет — на первой иллюстрации к посту: <br><br>1. первичная аннотация с помощью специализированных моделей (детекторы, OCR, сегментаторы);<br>2. фильтрация данных той же нейросетью: исправляют ошибки, удаляют ненужные аннотации;<br>3. итеративный процесс уточнения данных всё той же нейросетью.<br><br>FLD-5B состоит из 5 млн аннотаций, 126 млн изображений, 500 млн текстовых аннотаций, 1,3 млн текстовых аннотаций для локализации объекта на изображении и 3,6 млн текстовых аннотаций для поиска и детекции объектов по набору признаков. <br><br>Как итог, Florence-2 умеет делать 10+ задач (OCR, detection, segmentation, Caption to Phrase Grounding и др.) и довольно редко галлюцинирует. Однако, в отличие от современных VLM, она не справляется со сложными инстрактами, потому что не училась этому. Да и инстракты может принимать небольшие.<br><br><a href="https://arxiv.org/abs/2412.04424" rel="nofollow noopener noreferrer"><strong>Florence-VL: Enhancing Vision-Language Models with Generative Vision Encoder and Depth-Breadth Fusion<br></strong></a><br>Во второй статье авторы предлагают простую идею — использовать в качестве энкодера в VLM Florence-2. Причина проста: эта модель явно училась на OCR, детекцию и сегментацию, в отличие от CLIP/SigLIP (хотя SigLIP2 уже училась с next token prediction).<br><br>Заменить Image Encoder на Florence несложно. Нужно трижды инферить Image Encoder — по одному разу для получения признаков с прицелом на OCR, детекцию и сегментацию. Дальше фичи конкатенируются и пропускаются через projection (DBFusion), чтобы получить желаемое число каналов. Так появилось семейство Florence-VL. Подробнее — на второй иллюстрации к посту. <br><br>В результате Florence-VL демонстрирует высокую согласованность визуального энкодера и LLM, превосходя другие модели по 25 критериям. В том числе в задачах распознавания объектов, понимания семантики, распознавания текста и построения диаграмм. <br><br>Идея интересная, но, как показало время, не прижилась. Видимо, из-за того, что при таком подходе растёт число операций для получения фичей.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em> <em>Егор Шестопалов</em><br><a href="https://t.me/+955SbPNeKC5kMTAy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/180_480.webp" srcset="../../assets/media/thumbs/180_480.webp 480w, ../../assets/media/180.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="180" data-image-index="0" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/181_480.webp" srcset="../../assets/media/thumbs/181_480.webp 480w, ../../assets/media/181.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="180" data-image-index="1" /></div></div>
+      <div class="actions">
+        <span>11 440 просмотров · 25 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/180" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./180.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./182.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./179.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 180, "media": [{"kind": "photo", "path": "../../assets/media/180.jpg", "thumb": "../../assets/media/thumbs/180_480.webp", "size": 61163, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/181.jpg", "thumb": "../../assets/media/thumbs/181_480.webp", "size": 47922, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

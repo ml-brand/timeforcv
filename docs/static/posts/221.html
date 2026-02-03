@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #221</title>
+  <meta name="description" content=" Байки из  склепа  прода Alice AI VLM   Сегодня делимся двумя  скримерами  историями из первых рук о том, с какими сложностями столкнулись разработчики новой  Алисы AI  в продакшне.    Популярный сцен" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/221.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #221" />
+  <meta property="og:description" content=" Байки из  склепа  прода Alice AI VLM   Сегодня делимся двумя  скримерами  историями из первых рук о том, с какими сложностями столкнулись разработчики новой  Алисы AI  в продакшне.    Популярный сцен" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/221_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2025-12-11T10:16:40+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/221_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=221" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="221">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-12-11T10:16:40+00:00">2025-12-11 10:16 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Байки из <del>склепа</del> прода Alice AI VLM<br></strong><br>Сегодня делимся двумя <del>скримерами</del> историями из первых рук о том, с какими сложностями столкнулись разработчики новой <a href="https://alice.yandex.ru/" rel="nofollow noopener noreferrer">Алисы AI</a> в продакшне.  <br><br>Популярный сценарий использования нейросети — когда пользователь отправляет в чат картинку и просит помочь с тем, что на ней изображено. За этот навык отвечают Alice AI VLM и команда компьютерного зрения Яндекса, которая её развивает. Слово руководителю подгруппы распознавания текста в VLM Антону Клочкову @blog_toxa.<br><br><blockquote><strong>Проблема первая: пережатие картинок</strong><br><strong><br></strong>Те, кто имел дело с сервисами, где есть работа с картинками, не дадут соврать: найти баланс между качеством и скоростью загрузки изображений — сложная задача. Иногда баланс перевешивает в одну из сторон, и в нашем случае была проблема качества.<br><br>Как-то во время тестирования Алисы AI прилетает баг-репорт: фотография из учебника и комментарий: «Формулы выписываются неверно!» <em>(см. картинку 1)</em>. <br><br>Проверяем в тестинге — есть ошибка. Прогоняем офлайн через модель — ошибки нет. Странно? Очень!<br><br>Оказалось, что в продакшене сильно пережимаются изображения <em>(см картинку 2)</em>. Из-за этого путаются мелкие обозначения, вроде знаков неравенства, и иногда теряется весь смысл. Фикс был простой: мы ослабили правила на пережатие картинок.<br><br><strong>Проблема вторая: парсинг LaTeX</strong><br><br>Наши первые шаги к тому, чтобы сделать Алису AI действительно умной, проходили в Поиске по картинкам — там уже была готовая инфраструктура, а в чате ещё требовалась донастройка.<br><br>Однажды пришла пора тестировать решение в сервисе. И в целом, всё было хорошо, кроме одной детали. Оказалось, что на разных поверхностях (в нашем случае — Поиска и Алисы AI) по-разному работают правила парсинга LaTeX-вставок в Markdown. Например, в Поиске по картинкам формулы отображались одним образом <em>(см. картинку 3)</em>, а в Алиса AI — другим <em>(см. картинку 4)</em>. И это было не единственное различие в парсинге. <br><br>Решили мы это в одних случаях дообучением VLM на форматы, в других — правками во фронтенде.</blockquote><br><br>Алиса AI — это не только Alice AI VLM, о которой мы пишем в этом посте, но и Alice AI LLM, Alice AI LLM Search, Alice AI ART, а ещё много крутых инженерных решений. Если хотите больше технических деталей, советуем почитать свежий <a href="https://habr.com/ru/companies/yandex/articles/974594/" rel="nofollow noopener noreferrer">техрепорт</a>. А ознакомиться с главными фичами можно на <a href="https://alice.yandex.ru/about" rel="nofollow noopener noreferrer">лендинге</a>. <br><br><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/221_480.webp" srcset="../../assets/media/thumbs/221_480.webp 480w, ../../assets/media/221.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="221" data-image-index="0" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/222_480.webp" srcset="../../assets/media/thumbs/222_480.webp 480w, ../../assets/media/222.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="221" data-image-index="1" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/223_480.webp" srcset="../../assets/media/thumbs/223_480.webp 480w, ../../assets/media/223.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="221" data-image-index="2" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/224_480.webp" srcset="../../assets/media/thumbs/224_480.webp 480w, ../../assets/media/224.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="221" data-image-index="3" /></div></div>
+      <div class="actions">
+        <span>3 985 просмотров · 37 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/221" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./221.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./225.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./220.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 221, "media": [{"kind": "photo", "path": "../../assets/media/221.jpg", "thumb": "../../assets/media/thumbs/221_480.webp", "size": 88449, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/222.jpg", "thumb": "../../assets/media/thumbs/222_480.webp", "size": 108982, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/223.jpg", "thumb": "../../assets/media/thumbs/223_480.webp", "size": 45297, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/224.jpg", "thumb": "../../assets/media/thumbs/224_480.webp", "size": 68299, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

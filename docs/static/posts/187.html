@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #187</title>
+  <meta name="description" content=" Look Again, Think Slowly: Enhancing Visual Reflection in Vision-Language Models   Сегодня разбираем  статью  с любопытным методом разметки данных, который возвращает внимание модели к картинке, а не " />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/187.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #187" />
+  <meta property="og:description" content=" Look Again, Think Slowly: Enhancing Visual Reflection in Vision-Language Models   Сегодня разбираем  статью  с любопытным методом разметки данных, который возвращает внимание модели к картинке, а не " />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/187_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2025-10-17T12:03:08+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/187_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=187" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="187">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-10-17T12:03:08+00:00">2025-10-17 12:03 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Look Again, Think Slowly: Enhancing Visual Reflection in Vision-Language Models</strong><br><br>Сегодня разбираем <a href="https://arxiv.org/abs/2509.12132" rel="nofollow noopener noreferrer">статью</a> с любопытным методом разметки данных, который возвращает внимание модели к картинке, а не только к тексту.<br><br>При обучении на синтетике визуально-языковые модели быстро перестают смотреть на изображение и уходят в чисто текстовый ризонинг. Пример из статьи: нужно вычислить площадь под графиком. Текстовая модель пересчитывает шаги правильно, но не учитывает, что площадь под осью идёт с минусом. А модель с «визуальным рефлекшеном» может повторно взглянуть на картинку и заметить этот нюанс.<br><br>Чтобы показать проблему, в статье приводят несколько метрик. Первая — attention score между токенами рассуждения и визуальными токенами. Чем длиннее ризонинг, тем меньше внимания остаётся на картинку. <br><br>Вторая метрика — расстояние Хеллингера. Сначала запускают генерацию с картинкой, а затем убирают визуальные токены и продолжают без них. График показывает, что расстояние со временем уменьшается. Это значит, что итоговые генерации с убранной картинкой (после нескольких токенов, сгенерированных с изображением) почти не отличаются от генераций, где картинка присутствует. Иначе говоря, начиная с какого-то шага модель просто перестаёт использовать изображение и игнорирует его.<br><br>Авторы предлагают модель Reflection-V, которая умеет делать рефлекшн именно по изображению. <br><br>Решением становится новая разметка. Сначала составляется максимально подробный кэпшн, затем сильная текстовая модель (например, DeepSeek) выполняет задачу только по описанию. <br><br>Но ключевая идея статьи — агентский пайплайн. LLM-агент получает задачу: <em>«На что похожа фигура — на телевизор, телефон, компьютер или часы?»</em>. Он вызывает VLM и уточняет: <em>«Похоже ли это на часы?»</em>. VLM отвечает: «<em>Есть треугольники и квадраты, ничего круглого — не часы»</em>. Агент делает вывод: <em>«Значит, может быть телефон — у него кнопки сеткой, как клавиатура»</em>, и снова уточняет. Так формируется диалог, который суммаризатор превращает в связный reasoning trace. В итоге рассуждение действительно опирается на картинку, а не на текст.<br><br>Дополнительно используются фильтрации: если агент ответил без обращения к VLM, пример удаляется. На собранных данных модель обучается с GRPO. К обычной награде за правильный ответ добавляется ещё одна — по attention. Она измеряет, насколько во второй половине ризонинга модель продолжает опираться на изображение. Идея в том, чтобы не дать ей «забыть» картинку в середине рассуждения.<br><br>Тесты проводили на MathVision, MathVista, MMMU, IMMU-Pro, M3CoT и HallBench. Обучали две версии — Reflection-V-3B и Reflection-V-7B на базе Qwen2.5-VL. Они уверенно обгоняют опенсорсные ризонёры на синтетике и даже внутренние модели Qwen. <br><br>В агентской системе «мозгом» выступает QWQ-32B (LLM-reasoner), визуальным экспертом — Qwen-2.5-VL-72B. Обучение идёт в два этапа: сначала SFT (три эпохи на двух H100), затем GRPO (двенадцать эпох на восьми H100 через vLLM). Всего — около 16 тысяч ризонинг-семплов. Сетап скромный, особенно по объёму данных.<br>Аблейшны показывают, что полная модель (3B и 7B) даёт лучшие результаты. <br><br>Убираем reward по attention — метрики падают. Без SFT — ещё хуже. Убираем и то, и другое — совсем провал. Вывод авторов очевиден: все элементы нужны и каждый вносит свой вклад.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Илья Димов<br></em><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/187_480.webp" srcset="../../assets/media/thumbs/187_480.webp 480w, ../../assets/media/187.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="187" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>2 406 просмотров · 21 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/187" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./187.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./188.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./186.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 187, "media": [{"kind": "photo", "path": "../../assets/media/187.jpg", "thumb": "../../assets/media/thumbs/187_480.webp", "size": 109952, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

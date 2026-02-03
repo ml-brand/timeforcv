@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #182</title>
+  <meta name="description" content=" Should VLMs be Pre-trained with Image Data?   Сегодня разбираем  статью  о том, как лучше организовать претрейн для VLM. Архитектурных новшеств здесь нет: модель напоминает стандартные опенсорсные VL" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/182.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #182" />
+  <meta property="og:description" content=" Should VLMs be Pre-trained with Image Data?   Сегодня разбираем  статью  о том, как лучше организовать претрейн для VLM. Архитектурных новшеств здесь нет: модель напоминает стандартные опенсорсные VL" />
+  
+  <meta property="article:published_time" content="2025-09-25T17:00:01+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary" />
+  
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=182" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="182">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-09-25T17:00:01+00:00">2025-09-25 17:00 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Should VLMs be Pre-trained with Image Data?<br></strong><br>Сегодня разбираем <a href="https://arxiv.org/abs/2503.07603" rel="nofollow noopener noreferrer">статью</a> о том, как лучше организовать претрейн для VLM. Архитектурных новшеств здесь нет: модель напоминает стандартные опенсорсные VLM вроде LLaVA. Картинка кодируется вижн-энкодером, эмбеддинги прогоняются через несколько MLP-слоёв и подаются вместе с текстовыми эмбеддингами в LLM-декодер.<br><br>Главный вопрос статьи: на каком этапе и в каких пропорциях подключать мультимодальные данные, чтобы итоговая модель была сильной и в text-only, и в мультимодальном режимах.<br><br>Разберём три интересных аблейшна, представленных в работе.<br><br><strong>Когда останавливать LLM-претрейн</strong><br><br>Обычно берут полностью обученную LLM (например, на 3–4T токенов) и затем добавляют мультимодальный претрейн со своим LR-шедулером, который часто начинается с warmup. Авторы считают это неэффективным: мы сначала «убиваем» learning rate, а потом снова разгоняем его на мультимодальных данных.<br><br>Исследователи пробуют прервать обучение LLM не в самом конце, а на определённом проценте (например, ~80% от шага). Дальше продолжают обучение уже на смеси текстовых и мультимодальных данных, сохраняя текущий learning rate. По представленным VLM метрикам и отдельно text-only-числам, такой вариант даёт лучше результаты, чем стратегия «сначала — до конца LLM, потом — мультимодальность».<br><br><strong>Соотношение текстовых и мультимодальных данных<br><br></strong>Во многих открытых моделях текстовые и мультимодальные данные миксуют на претрейне VLM, однако аблейшенов не дают. В статье показано, что оптимально брать в претрейн 10–20% мультимодальных данных.<br><br>Это можно объяснить качеством датасета: картинки проще, но сами мультимодальные пары нередко «грязные», особенно в опенсорсе. Исходя из практики, мы тоже видим необходимость подбирать соотношение, однако это сильно зависит от качества данных и представленных в них доменов.<br><br><strong>Инструктивность и SFT-эпохи<br></strong><br>В классическом VLM-pretrain нет инструктивности — модели просто описывают картинки. В последнее время часть инструктивных примеров добавляется уже на претрейне, и это работает. У авторов эффект почти незаметен, скорее всего, из-за слабого датасета (устаревшие LLaVA-данные) и малого количества инструктивных данных.<br><br>Ещё одно наблюдение связано с количеством эпох на SFT. Авторы пишут, что в их случае оптимальны четыре эпохи. При данных среднего качества выводы ограниченные и вряд ли могут быть перенесены на любую модель, однако результат полезный. По нашему же опыту — если данные хорошие, дополнительные эпохи действительно помогают.<br><br>В целом статья скорее систематизирует наблюдения, чем открывает новое, но её результаты подтверждают, как важно грамотно комбинировать текст и мультимодальность и где именно стоит искать улучшения.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Владислав Смирнов</em><br><a href="https://t.me/+955SbPNeKC5kMTAy" rel="nofollow noopener noreferrer">CV Time</a></div>
+      <div class="actions">
+        <span>2 249 просмотров · 26 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/182" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./182.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./183.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./180.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 182, "media": []}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #85</title>
+  <meta name="description" content=" FoundationStereo: Zero-Shot Stereo Matching   Сегодня разбираем  статью  от NVIDIA. Исследователи решают задачу определения глубины по двум изображениям, снятым с близко расположенных камер, то есть " />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/85.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #85" />
+  <meta property="og:description" content=" FoundationStereo: Zero-Shot Stereo Matching   Сегодня разбираем  статью  от NVIDIA. Исследователи решают задачу определения глубины по двум изображениям, снятым с близко расположенных камер, то есть " />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/85_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2025-03-28T07:35:14+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/85_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../page-2.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../page-2.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=85" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="85">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-03-28T07:35:14+00:00">2025-03-28 07:35 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>FoundationStereo: Zero-Shot Stereo Matching</strong><br><br>Сегодня разбираем <a href="https://nvlabs.github.io/FoundationStereo" rel="nofollow noopener noreferrer">статью</a> от NVIDIA. Исследователи решают задачу определения глубины по двум изображениям, снятым с близко расположенных камер, то есть со стереопары. Камеры смотрят в одном направлении, поэтому каждая 3D-точка попадает приблизительно на одну строку в обеих картинках, но в разных местах. Это позволяет искать соответствия между пикселями одной и той же строки двух изображений, и, используя эти соответствия, восстанавливать глубину сцены.<br><br>Определив соответствия между точками на двух изображениях, можно вычислить диспаритет — сдвиг координат пикселя на одной картинке относительно другой. Зная диспаритет, фокусное расстояние и расстояние между оптическими центрами камер, можно пересчитать его в глубину.<br><br>Исследователи из NVIDIA говорят, что сейчас нет модели стерео-матчинга, которая бы показывала хорошую zero-shot-генерализацию. Текущие лучшие решения предлагается дообучать на целевой домен.<br><br>В других задачах проблему генерализации уже удалось решить за счёт больших данных. Например, Segment Anything обучили на огромном датасете, и модель успешно работает без дообучения. NVIDIA попробовала применить этот же подход к стерео-матчингу. Они собрали фотореалистичный синтетический датасет FSD (<em>картинка 2</em>) из миллиона стереопар, превосходя по объёму и многообразию другие открытые датасеты. Датасет <a href="https://github.com/xieyuankun/FSD-Dataset" rel="nofollow noopener noreferrer">выложен</a> в открытый доступ.<br><br><strong>Детали архитектуры</strong><br><br>Из левого и правого изображений (<em>картинка 1</em>) извлекаются фичи из Depth Anything, конкатенируются с фичами из отдельной обучаемой свёрточной сети. Из этой пары создаётся feature cost volume — объём фичей, где каждая описывает похожесть пикселя на левой картинке на пиксели в той же строке на правой картинке и корреляционный cost volume, где похожесть пикселей описывается единственным числом.<br><br>Такие cost volume’ы уже можно использовать для поиска диспаритета, но в них недостаёт глобального контекста картинок. Чтобы его добавить, применяется операция AHCF (Attentive Hybrid Cost Filtering), особенность которой — использование информации из всего cost volume для получения значений в финальном пикселе выходного тензора; это делается с помощью глобального внимания в transformer-ветви AHCF и с помощью аналога separable-свёрток в свёрточной ветви AHCF. Изменение по ablation даёт 10% улучшения по метрике BP-2: доля пикселей, где ошибка диспаритета больше 2 пикселей (0.221 → 0.197).<br><br>Дальше процесс похож на описанный в <a href="https://arxiv.org/abs/2109.07547" rel="nofollow noopener noreferrer">RAFT-Stereo</a>, но с некоторыми отличиями. В RAFT-Stereo сеть получает на вход hidden state и срез из correlation cost volume. В Foundation Stereo получает срезы из correlation cost volume и feature cost volume.<br><br>Таким образом, вход в GRU включает:<br><br> — срез cost volume в соответствии с текущей оценкой диспаритета;<br> — фичи левой картинки из отдельно обучаемой контекстной сети (так делалось и в RAFT-Stereo);<br> — саму текущую оценку диспаритета.<br>GRU обновляет внутреннее состояние и предсказывает поправку, итеративно уточняя диспаритет.<br><br><strong>Детали обучения</strong><br><br>Модель обучается на смеси FSD-датасета и других датасетов с smoothed L1-лоссом и экспоненциально затухающими L1-добавками для оценок на диспаритет с разных итераций GRU-юнита.<br><br>Данные из FSD дополнительно фильтруют по BP-2, используя эту же модель, обученную на полном FSD-датасете, а затем обучают ёще раз.<br><br><strong>Интересное из ablation study:</strong><br><br> — использование Depth Anything фичей как входов в feature cost volume не работает совсем (по метрике BP-2);<br> — в separable-свертках для фильтрации feature cost volume используется ядро размера 17(!) по размерности диспаритета (но 1 по spatial-размерности);<br> — добавление FSD-датасета в обучение даёт BP-2 на датасете Middlebury в два раза лучше, чем без него.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Леонид Штанько </em><br><br><a href="https://t.me/+955SbPNeKC5kMTAy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/85_480.webp" srcset="../../assets/media/thumbs/85_480.webp 480w, ../../assets/media/85.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="85" data-image-index="0" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/86_480.webp" srcset="../../assets/media/thumbs/86_480.webp 480w, ../../assets/media/86.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="85" data-image-index="1" /></div></div>
+      <div class="actions">
+        <span>6 966 просмотров · 27 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/85" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-2.html">К списку постов</a> · <a href="./85.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./87.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./84.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 85, "media": [{"kind": "photo", "path": "../../assets/media/85.jpg", "thumb": "../../assets/media/thumbs/85_480.webp", "size": 102312, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/86.jpg", "thumb": "../../assets/media/thumbs/86_480.webp", "size": 65619, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

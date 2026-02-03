@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #186</title>
+  <meta name="description" content=" Работы по сбору датасетов для задачи instruction-based editing   Вместе с ростом популярности T2I-генерации стала активно развиваться и задача редактирования изображений. Несмотря на очевидные сходст" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/186.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #186" />
+  <meta property="og:description" content=" Работы по сбору датасетов для задачи instruction-based editing   Вместе с ростом популярности T2I-генерации стала активно развиваться и задача редактирования изображений. Несмотря на очевидные сходст" />
+  
+  <meta property="article:published_time" content="2025-10-13T08:52:06+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary" />
+  
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=186" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="186">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-10-13T08:52:06+00:00">2025-10-13 08:52 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Работы по сбору датасетов для задачи instruction-based editing<br></strong><br>Вместе с ростом популярности T2I-генерации стала активно развиваться и задача редактирования изображений. Несмотря на очевидные сходства, между ними есть как минимум одно ключевое отличие: редактирование — не одна задача, а целое семейство, и с точки зрения ML, и с точки зрения данных.<br><br>Сергей Кастрюлин, исследователь Yandex Research, разобрал основные работы по сбору датасетов для задачи instruction-based editing. <br><br><a href="https://arxiv.org/abs/2404.18212" rel="nofollow noopener noreferrer"><strong>Paint by Inpaint: Learning to Add Image Objects by Removing Them First</strong></a> [<a href="https://huggingface.co/datasets/paint-by-inpaint/PIPE" rel="nofollow noopener noreferrer">датасет на HF</a>, без лицензии]<br><br>Крупный (1,8M сэмплов) датасет, полностью посвящённый задаче добавления/удаления объектов. Авторы стартуют с картинок из COCO и OpenImages, для которых уже просчитаны маски (датасет LVIS). По этим маскам делают Remove через SD-Inpainting.<br><br>Основная часть работы посвящена фильтрациям:<br>— Исходные пары картинка-маска фильтруют по размеру и положению маски (слишком мелкая, слишком близка к краю картинки).<br>— После инпейнтинга проверяют, что объект действительно удалён, что удалён именно важный объект и что в целом картинка не испортилась, вычисляя набор эвристических метрик на основе локальных CLIP-эмбеддингов.<br><br>В статье указано соотношение source- и target-картинок: из ~800К исходных получили 1,800К таргетов. Это довольно сбалансированное распределение.<br><br><a href="https://arxiv.org/abs/2405.04007" rel="nofollow noopener noreferrer"><strong>SEED-Data-Edit Technical Report: A Hybrid Dataset for Instructional Image Editing</strong></a> [<a href="https://huggingface.co/datasets/AILab-CVC/SEED-Data-Edit" rel="nofollow noopener noreferrer">датасет на HF</a>, некоммерческий]<br><br>Ещё один большой (1,5М сэмплов) датасет, состоящий из трёх частей.<br><br><strong>Часть 1: синтетические данные<br></strong><br> 1) Добавление и удаление объектов:<br>— Берут изображения из Unsplash и OpenImages.<br>— С помощью моделей LLAVA-1.5, GroundingDINO и SAM сегментируют объекты, подходящие для удаления.<br>— Делают удаление с помощью модели инпейнтинга LaMa.<br>— Для получения данных на задачу добавления объектов инвертируют триплеты.<br><br>2) Изменение объектов:<br>— Берут реальную картинку, кепшенят её.<br>— С помощью ChatGPT изменяют часть исходного инстракта. <br>— Берут image-guided T2I-модель PnP, подают в неё исходную картинку и измененный инстракт, получают результат.<br><br><strong>Части 2 и 3: реальные данные<br></strong><br>— Парсят сайты, где пользователи просят отфотошопить картинки. Получают 52К триплетов.<br>— Просят асессоров в фотошопе последовательно внести простые изменения и описать их кепшенами. Получают 21К последовательностей разной длины (до пяти редактирований на картинку).<br><br>На смеси данных учат LoRA для модели SEED-X. Минусы:<br>— В отличие от Qwen-Image авторы не перераспределяют данные по стадиям (было бы логично начать с плохой синетики, а закончить обучение на чистых реальных данных).<br>— Информация о последовательных редактированиях никак не используется — её просто перегруппируют в триплеты.<br>— О фильтрации не сказано ни слова, так что датасет почти наверняка шумный.<br><br><a href="https://arxiv.org/abs/2411.15738" rel="nofollow noopener noreferrer"><strong>AnyEdit: Mastering Unified High-Quality Image Editing for Any Idea</strong></a> [<a href="https://huggingface.co/datasets/Bin1117/AnyEdit" rel="nofollow noopener noreferrer">датасет на HF</a>, без лицензии]<br><br>2,5М сэмплов, разбитых на 5 категорий для увеличения разнообразия данных:<br><br>— Локальное редактирование: добавление, удаление или замена объектов, изменение цвета и действий;<br>— Глобальное редактирование: изменение тона, стиля или фона изображения;<br>— Редактирование, связанное с движением камеры: расширение кадра, поворот, изменение размера;<br>— Визуальное редактирование: перенос материалов, работа со скетчами и масками;<br>— Неявное редактирование (Implicit Editing).<br><br>Авторы стартуют с 680К из нескольких открытых датасетов. В данных отсутствуют «редкие концепты», поэтому генерят синтетические исходные картинки:<br><br>— Определяют редкие концепты.<br>— Просят LM сгенерить промпты для T2I-модели, чтоб они включали эти концепты.<br>— Генерят еще 700К картинок, доливают к исходным реальным.<br><br>Затем берутся промпты к исходным синтетическим картинкам и кепшены к реальным и — из них с помощью Llama3-8b генерятся editing-инстракты. <br><br>В статье описаны 9 пайплайнов генерации данных для покрытия пяти категорий задач указанных выше (Figure 7, appendix). После генерации есть фильтрация на основе CLIP-based эвристик.<br><br><strong>Продолжение читайте в авторском канале Сергея Кастрюлина </strong><strong>@c_research</strong><strong>.<br></strong><br><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer">CV Time</a></div>
+      <div class="actions">
+        <span>1 954 просмотров · 13 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/186" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./186.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./187.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./184.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 186, "media": []}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

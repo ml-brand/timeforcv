@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #220</title>
+  <meta name="description" content=" InternVL3.5: Advancing Open-Source Multimodal Models in Versatility, Reasoning and Efficiency   Авторы опенсорс-семейства InternVL постоянно выпускают всё новые и новые улучшения своих мультимодальны" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/220.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #220" />
+  <meta property="og:description" content=" InternVL3.5: Advancing Open-Source Multimodal Models in Versatility, Reasoning and Efficiency   Авторы опенсорс-семейства InternVL постоянно выпускают всё новые и новые улучшения своих мультимодальны" />
+  
+  <meta property="article:published_time" content="2025-12-09T09:53:01+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary" />
+  
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=220" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="220">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-12-09T09:53:01+00:00">2025-12-09 09:53 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>InternVL3.5: Advancing Open-Source Multimodal Models in Versatility, Reasoning and Efficiency<br></strong><br>Авторы опенсорс-семейства InternVL постоянно выпускают всё новые и новые улучшения своих мультимодальных моделей, которые опережают SoTA-результаты в первую очередь по бенчмаркам. Сегодня разберём <a href="https://arxiv.org/abs/2508.18265" rel="nofollow noopener noreferrer">статью</a> о свежей версии InternVL3.5.<br><br>В основе улучшений — три основных нововведения.<br><br><strong>Cascade Reinforcement Learning<br></strong><br>Раньше модели InternVL использовали MPO в качестве offline RL. В новой версии 3.5 авторы добавили ещё и online RL: принято считать, что на LLM/VLM он гораздо лучше, чем offline. Но offline RL значительно легче по вычислениям (в основном из-за того, что во время обучения не нужно генерировать ответы на инструкции).<br><br>Авторы показали, что offline RL не так уж сильно отстаёт от online RL, но при этом обучается в 20 раз быстрее. А лучшее качество модели достигается при совместном каскадном обучении: результаты лучше, чем у online RL, даже на двух эпохах. Так offline RL превратился в warmup для online RL.<br><br>В качестве online RL используется GSPO — модификация GRPO, которая решает проблему нестабильности обучения и «коллапса модели», особенно при тренировке Mixture-of-Experts-моделей. GRPO работает на уровне отдельных токенов, создавая шумные градиенты, а GSPO применяет оптимизацию на уровне всей последовательности целиком, что важно для длинных цепочек рассуждений.<br><br><strong>Visual Resolution Router (ViR)<br></strong><br>Основная цель этого нововведения — снизить вычислительную нагрузку на модель во время инференса. Этого удалось добиться за счёт уменьшения количества визуальных токенов в представлении каждого кропа картинки. Сколько токенов нужно выделить на кроп, решает роутер. Среднее количество визуальных токенов, поступающих в LLM, при таком подходе сокращается на 50%. <br><br>Стандартный процесс кодирования картинки выглядит так: <br><br>— изображение делится на кропы, <br>— каждый патч преобразуется в 1024 токена для ViT, <br>— после обработки ViT количество токенов уменьшается адаптером до 256 и передаются в LLM. <br><br>Роутер может направить токены в более агрессивный адаптер и сжать до 64 токенов. Обучение происходит в два этапа. На первом этапе модель тренируется решать задачу с меньшим количеством токенов за счёт минимизации KL-дивергенции между распределениями выходных данных изначального сжатия и более агрессивного сжатия.<br><br>Цель второго этапа — научить сам роутер ViR принимать правильные решения о степени сжатия для каждого кропа. ViR обучается как стандартный бинарный классификатор, где label кропа определяется по значению loss из первого этапа.<br><br>Итог — flash-модель практически без потери качества с ускорением до 4 раз (точная цифра зависит от разрешения картинки и размера модели).<br><br><strong>DvD (Decoupled Vision-Language Deployment)</strong><br><br>В этой системе модель для обработки изображений (ViT) и языковая модель (LLM) разворачиваются на отдельных серверах или GPU.<br><br>Они работают не последовательно (сначала картинка, потом текст), а параллельно. Пока языковая модель генерирует ответ на предыдущий запрос, визуальный энкодер уже обрабатывает следующее изображение. Это даёт ускорение до 2 раз для базовых моделей, а в комбинации с ViR — до 4 раз на высоких разрешениях. <br><br>По словам авторов, новая InternVL3.5 рассуждает на +16,0% эффективнее и в 4,05 раз быстрее, чем её предшественники. <br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Антон Астахов<br></em><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer">CV Time</a></div>
+      <div class="actions">
+        <span>1 473 просмотров · 27 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/220" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./220.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./221.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./213.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 220, "media": []}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #75</title>
+  <meta name="description" content=" Эволюция диффузионок: главные вехи последних лет   Вчера на Хабре вышла большая и захватывающая  статья  исследователя Yandex Research Сергея Кастрюлина об истории развития диффузионных моделей. Сред" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/75.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #75" />
+  <meta property="og:description" content=" Эволюция диффузионок: главные вехи последних лет   Вчера на Хабре вышла большая и захватывающая  статья  исследователя Yandex Research Сергея Кастрюлина об истории развития диффузионных моделей. Сред" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/75_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2025-03-05T09:26:51+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/75_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../page-3.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../page-3.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=75" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="75">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-03-05T09:26:51+00:00">2025-03-05 09:26 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Эволюция диффузионок: главные вехи последних лет</strong><br><br>Вчера на Хабре вышла большая и захватывающая <a href="https://habr.com/ru/companies/yandex/articles/886466/" rel="nofollow noopener noreferrer">статья</a> исследователя Yandex Research Сергея Кастрюлина об истории развития диффузионных моделей. Среди прочего в ней рассказано о борьбе каскадной и латентной парадигм, дилемме между свёрточными моделями и трансформерами, дистилляции как решении проблемы медленной генерации и многом другом. В этом посте мы уместили краткий обзор части работ, которые упоминаются в статье, — очень советуем прочитать полную версию. <br><br><a href="https://arxiv.org/abs/2301.11093" rel="nofollow noopener noreferrer"><strong>Simple diffusion: End-to-end diffusion for high resolution images</strong></a><br>Один из трендов начала 2023 года — противостояние каскадной и латентной диффузии. Обе парадигмы ставят задачей уменьшить размерность пространства, в котором происходит генерация объектов, поскольку считается, что генерация в высоком разрешении — слишком сложная задача. В своей работе авторы из Google Brain показывают, что диффузионную модель можно обучить сразу генерировать изображения в высоком разрешении без усложнений в виде каскадных схем и автокодировщиков. В статье на Хабре рассказано, с помощью каких приёмов это было достигнуто. <br><br><a href="https://arxiv.org/abs/2307.01952" rel="nofollow noopener noreferrer"><strong>SDXL: Improving Latent Diffusion Models for High-Resolution Image Synthesis</strong></a><br>Ещё одна громкая публикация, на этот раз от <a rel="nofollow noopener noreferrer">Stability.ai</a>. Описанная в ней модель  SDXL — первая по-настоящему большая опенсорс-модель с 2,8 миллиарда параметров (что немало и сегодня). Механизм, при котором конкатятся текстовые эмбеддинги из нескольких энкодеров, популярен до сих пор. Кроме этого, SDXL остаётся сильным бейзлайном по качеству генерации.<br><br><a href="https://arxiv.org/abs/2309.15807" rel="nofollow noopener noreferrer"><strong>Emu: Enhancing Image Generation Models Using Photogenic Needles in a Haystack</strong></a><br>EMU — первая text-to-image модель от Meta*. Авторы показывают, что для SFT важнее качество данных, а не их объём. В полной статье можно подробнее прочитать главное о разделении обучения на pretraining и SFT. А ещё именно в EMU впервые предложили использовать VAE, в которых было больше четырёх каналов — сейчас таким уже никого не удивишь.  <br><br><a href="https://arxiv.org/abs/2006.11807" rel="nofollow noopener noreferrer"><strong>Improving Image Captioning with Better Use of Captions</strong></a><br>Релиз обновлённой DALL-E — событие, которое вышло далеко за рамки ML. Модель выгодно отличалась на фоне современников. Во многом OpenAI удалось достигнуть этого благодаря новому подходу к обучению: 95% пар «картинка — текст» заменили на правильную синтетику. <br><br><a href="https://arxiv.org/abs/2310.00426" rel="nofollow noopener noreferrer"><strong>PixArt-α: Fast Training of Diffusion Transformer for Photorealistic Text-to-Image Synthesis</strong></a><br>Трансформерную архитектуру DiT для диффузионных моделей предложили ещё в конце 2022 года. В PixArt-α её доработали, добавив возможность использовать тексты в качестве условия для генерации. Совместив это с изменениями в данных и обучении, авторы добились высоких результатов при минимальных вычислительных затратах.<br><br><a href="https://arxiv.org/abs/2311.17042" rel="nofollow noopener noreferrer"><strong>Adversarial Diffusion Distillation</strong></a><br>Статья, которую первоначально захейтили и отклонили рецензенты. Именно в ней <a rel="nofollow noopener noreferrer">Stability.ai</a> предложила первый метод дистилляции для решения проблемы долгого инференса. Его использовали в модели SDXL‑Turbo и смогли генерировать изображения, сопоставимые по качеству с генерациями исходной модели, но на порядок быстрее. ADD до сих пор остаётся популярным методом дистилляции.<br><br><a href="https://arxiv.org/abs/2410.10629" rel="nofollow noopener noreferrer"><strong>SANA</strong></a><strong>, </strong><a href="https://github.com/Kwai-Kolors/Kolors/blob/master/imgs/Kolors_paper.pdf" rel="nofollow noopener noreferrer"><strong>Kolors</strong></a><strong>, </strong><a href="https://www.flux.ai/p" rel="nofollow noopener noreferrer"><strong>FLUX </strong></a><strong>и другие современные модели<br></strong>Вторая часть статьи посвящена обзору более свежих разработок. Летом 2024-го вышел масштабный техрепорт Kolors — таким китайские исследователи балуют нечасто. В нём они, среди прочего, говорят об использовании GLM, мультиязычной генеративной модели, в качестве текстового энкодера. В ноябре того же года Nvidia представила модель SANA с возможностью без дополнительных Super‑Resolution‑моделей генерировать изображения в 4К. А в последнее время фокус сместился в сторону закрытых моделей, таких как Ideogram, Recraft, MidJourney и FLUX, о которых известно не так много.<br><br>Кроме более полного экскурса в эволюцию диффузионок за последние два года, в статье упоминают <a href="https://shad.yandex.ru/cvweek#program" rel="nofollow noopener noreferrer">CV Week</a>, бесплатный интенсив ШАДа о диффузионных моделях. О нём у нас был <a href="https://t.me/timeforcv/65" rel="nofollow noopener noreferrer">пост</a> с комментариями спикеров — будет полезно, если захочется пробежаться по ключевым тезисам.<br><br><a href="https://t.me/+955SbPNeKC5kMTAy" rel="nofollow noopener noreferrer">CV Time</a><br><br><em>___<br>Meta признана экстремистской организацией, а Facebook и Instagram запрещены на территории РФ</em><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/75_480.webp" srcset="../../assets/media/thumbs/75_480.webp 480w, ../../assets/media/75.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="75" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>2 396 просмотров · 31 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/75" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-3.html">К списку постов</a> · <a href="./75.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./76.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./74.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 75, "media": [{"kind": "photo", "path": "../../assets/media/75.jpg", "thumb": "../../assets/media/thumbs/75_480.webp", "size": 157422, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

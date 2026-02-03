@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #143</title>
+  <meta name="description" content=" Improving the Diffusability of Autoencoders   Сегодня разбираем  статью , в которой обсуждается то, что авторы называют diffusability латентного пространства: насколько легко диффузионной модели учит" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/143.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #143" />
+  <meta property="og:description" content=" Improving the Diffusability of Autoencoders   Сегодня разбираем  статью , в которой обсуждается то, что авторы называют diffusability латентного пространства: насколько легко диффузионной модели учит" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/143_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2025-06-04T08:06:18+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/143_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../page-2.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../page-2.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=143" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="143">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-06-04T08:06:18+00:00">2025-06-04 08:06 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Improving the Diffusability of Autoencoders</strong><br><br>Сегодня разбираем <a href="https://arxiv.org/abs/2502.14831" rel="nofollow noopener noreferrer">статью</a>, в которой обсуждается то, что авторы называют diffusability латентного пространства: насколько легко диффузионной модели учиться на латентах автоэнкодера.<br><br>В латентных диффузионных моделях (например, Stable Diffusion) генерация происходит не в пикселях, а в сжатом представлении. Это ускоряет обучение, но вводит зависимость от свойств автоэнкодера. Обычно смотрят только на качество реконструкции: насколько хорошо декодер восстанавливает изображение. Но есть вторая характеристика — diffusability, и именно её авторы рассматривают в этой работе.<br><br><strong>Что такое diffusability и почему это важно</strong><br><br>Если латенты имеют сложное распределение или содержат неинформативные шумовые компоненты, диффузии приходится подстраиваться под это распределение — обучаться дольше и потенциально упираться в потолок качества. Поэтому автоэнкодер задаёт не только качество реконструкции, но и удобство обучения вместе с последующей генерацией.<br><br>Авторы смотрят на латенты от обычных автоэнкодеров и замечают, что они визуально шумные: в них много высокочастотных деталей, особенно в фоне. Чтобы разобраться, применяют дискретное косинусное преобразование (DCT), как в JPEG. Разбивают картинку или латент на блоки 8×8, считают DCT по каждому из них, усредняют спектры и строят частотный профиль.<br><br>Выясняется, что латенты содержат больше высокочастотных компонентов, чем изображения, и это особенно заметно при увеличении числа каналов. Даже если латент визуально похож на картинку, его частотный профиль сильно отличается. А если обнулить высокие частоты и попробовать восстановить изображение, латент теряет качество гораздо сильнее, чем обычное изображение — там такие потери почти незаметны. Это говорит о том, что латенты слишком зависят от высокочастотной части  и не обладают масштабной эквивариантностью.<br><br>Тогда авторы добавляют к лоссу автоэнкодера простую компоненту: берут исходное изображение и соответствующий латент, уменьшают их разрешение (в 2 или 4 раза), затем реконструируют картинку из сжатого латента и считают дополнительный лосс между даунскейленным изображением и полученной реконструкцией.<br><br>Таким образом они обеспечивают соблюдения свойства масштабной инвариантности (потому что лосс буквально это и делает), что, в свою очередь, регуляризует латенты, убирая из них лишние высокие частоты. <br><br>Результат — латенты становятся менее шумными, частотные профили ближе к тем, что у изображений. И, что важно, визуально структура латента сохраняется. Согласно метрикам, качество реконструкции почти не падает.<br><br><strong>Эксперименты</strong><br><strong><br></strong>Метод протестировали на ImageNet-1K (изображения) и Kinetics-700 (видео). Сравнивали обучение диффузионной модели на обычных и исправленных латентах.<br><br>В статье diffusability измеряют через скорость обучения: берут автоэнкодер, обучают на нём диффузионную модель и смотрят, насколько быстро растёт метрика качества (например, FID для изображений и FVD для видео). Сравнивались базовые модели и те же архитектуры, но обученные на автоэнкодерах с исходным и улучшенным diffusability. Оказалось, что последние учатся быстрее и дают лучшее финальное качество.<br><br>Результаты:<br> — генерация изображений: FID улучшился на 19%;<br> — генерация видео: FVD улучшился на 44%;<br> — модели обучаются быстрее;<br> — PSNR немного растёт (за счёт блюра), но визуально картинки выглядят нормально.<br><br>Визуализация того, как выглядят латенты до и после (<em>см. картинку</em>), взята <a href="https://arxiv.org/pdf/2502.09509" rel="nofollow noopener noreferrer">из другой работы</a>, посвященной этой же теме: шум действительно уходит, но структура остаётся. Частотные кривые тоже приближаются к тем, что у изображений.<br><br>В целом статья посвящена довольно локальной проблеме, но в ней есть понятная идея и измеримый эффект. <br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> </em>Сергей Кастрюлин<br><a href="https://t.me/+955SbPNeKC5kMTAy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/143_480.webp" srcset="../../assets/media/thumbs/143_480.webp 480w, ../../assets/media/143.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="143" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>5 772 просмотров · 37 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/143" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-2.html">К списку постов</a> · <a href="./143.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./144.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./140.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 143, "media": [{"kind": "photo", "path": "../../assets/media/143.jpg", "thumb": "../../assets/media/thumbs/143_480.webp", "size": 49252, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

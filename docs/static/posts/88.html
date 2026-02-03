@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #88</title>
+  <meta name="description" content=" PartEdit: Fine-Grained Image Editing using Pre-Trained Diffusion Models   Сегодня разбираем  статью  о редактировании изображений. Авторы показывают, как с помощью предобученной диффузионной модели S" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/88.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #88" />
+  <meta property="og:description" content=" PartEdit: Fine-Grained Image Editing using Pre-Trained Diffusion Models   Сегодня разбираем  статью  о редактировании изображений. Авторы показывают, как с помощью предобученной диффузионной модели S" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/88_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2025-04-10T08:02:01+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/88_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../page-2.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../page-2.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=88" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="88">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-04-10T08:02:01+00:00">2025-04-10 08:02 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>PartEdit: Fine-Grained Image Editing using Pre-Trained Diffusion Models</strong><br><br>Сегодня разбираем <a href="https://arxiv.org/abs/2502.04050" rel="nofollow noopener noreferrer">статью</a> о редактировании изображений. Авторы показывают, как с помощью предобученной диффузионной модели SDXL можно детально изменять заданные сегменты на изображении.<br><br>Предложенный метод требует обучения токенов частей картинки на датасете, где для каждой картинки и целевого токена есть маска, соответствующая области, которую нужно изменить. В промпт подаются два токена, например: &lt;head&gt; (токен головы) и &lt;BG&gt; (бэкграунд для головы). Причём токен бэкграунда (&lt;BG&gt;) уникален для каждого целевого токена.<br><br>Дальше токены обучаются так, чтобы маски аттеншна в SDXL давали маски сегментации нужной части картинки. При этом сама диффузионная модель остается замороженной, обучаются только токены.<br><br>Авторы отдельно изучают, в каком диапазоне (от 0 до 50, где 0 — почти чистое изображение, а 50 — максимально зашумлённое) лучше брать усреднение. При обучении на таймстемпах [50, 40] маски получаются некачественные. В диапазоне [30, 20] результат лучше. При [10, 0] — чуть хуже, чем на среднем. <br><br>Когда эмбеддинги выучены, происходит редактирование. В случае с синтетическими изображениями используются три ветки: <br><br><strong>1. Генерация исходного синтетического изображения.</strong> Например, по промпту &quot;A closeup of a man&quot; в качестве промпта подаётся, например, &quot;A closeup of a man&quot;, где мы хотим заменить голову человека на голову робота. SDXL генерирует изображение и при этом сохраняется траектория — промежуточные латенты для каждого таймстемпа.<br><br><strong>2. Средняя часть архитектуры работает как сегментатор: </strong>в SDXL подаются только два выученных эмбеддинга: части, которую нужно отредактировать и бэкграунда. В нашем примере это будет &lt;head&gt; и &lt;BG&gt;.<br><br>Для каждого таймстемпа собираются все маски аттеншна со всех слоёв (предварительно приводятся к одному размеру и агрегируются). Затем применяется алгоритм OTSU, который вычисляет локальный порог: если значение больше порога — это единица, если меньше — ноль, а в промежутке от 1/2K до 3/2K маска просто сохраняется. <br><br><strong>3. Генерация отредактированного изображения:</strong> через SDXL прогоняются выученные эмбеддинги того, что нужно заменить (например, чтобы получить &quot;A closeup of a man with robotic &lt;head&gt;&quot;).<br><br>На этапе редактирования фичемапы с исходного и редактирующего прогона блендятся с помощью предобработанных масок аттеншна из второй ветки. В конце прогона получается отредактированное изображение: нужная часть изменена, остальное — как в оригинале.<br><br>Решение применимо не только к синтетическим, но и к реальным изображениям: с помощью методов инверсии LEDIT++ и EF-DDPM получают латенты, а с помощью BLIP2 — промпт-описание исходной картинки.<br><br>В сравнениях с другими подходами в качестве метрики используется Alpha-CLIP: по маске определяется область редактирования, а с помощью CLIP считается, насколько результат соответствует заданному промпту. Как водится — по всем метрикам результаты превосходят конкурентов.<br><br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Александр Шишеня</em><br><a href="https://t.me/+955SbPNeKC5kMTAy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/88_480.webp" srcset="../../assets/media/thumbs/88_480.webp 480w, ../../assets/media/88.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="88" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>2 004 просмотров · 15 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/88" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-2.html">К списку постов</a> · <a href="./88.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./89.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./87.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 88, "media": [{"kind": "photo", "path": "../../assets/media/88.jpg", "thumb": "../../assets/media/thumbs/88_480.webp", "size": 77077, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

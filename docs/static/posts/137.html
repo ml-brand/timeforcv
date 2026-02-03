@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #137</title>
+  <meta name="description" content=" HunyuanVideo: A Systematic Framework For Large Video Generative Models     Сегодня разбираем  статью  от команды Tencent о HunyuanVideo — большой генеративной модели для видео. Работа во многом напом" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/137.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #137" />
+  <meta property="og:description" content=" HunyuanVideo: A Systematic Framework For Large Video Generative Models     Сегодня разбираем  статью  от команды Tencent о HunyuanVideo — большой генеративной модели для видео. Работа во многом напом" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/137_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2025-05-12T08:05:59+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/137_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../page-2.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../page-2.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=137" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="137">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-05-12T08:05:59+00:00">2025-05-12 08:05 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>HunyuanVideo: A Systematic Framework For Large Video Generative Models</strong><br><strong><br></strong>Сегодня разбираем <a href="https://arxiv.org/abs/2412.03603" rel="nofollow noopener noreferrer">статью</a> от команды Tencent о HunyuanVideo — большой генеративной модели для видео. Работа во многом напоминает <a href="https://arxiv.org/abs/2410.13720" rel="nofollow noopener noreferrer">MovieGen</a>, но есть некоторые важные отличия. А главное — веса модели выложены в открытый доступ, что редкость для видеомоделей.<br><br>Обучение начинается с картинок 256×256, потом разрешение повышают до 512×512. При этом 256×256 всё ещё поддерживается — чтобы не терять навык генерации на этом уровне. Сначала учат только на изображениях, потом добавляют видео. <br><br>Генерация стартует с нормального распределения, стандартного для диффузионок. Но вместо линейно-квадратичного расписания шагов из MovieGen, здесь применяется «сдвинутое» специальным образом расписание. Авторы говорят, что такой сдвиг даёт лучшее качество, чем квадратичное расписание, особенно при уменьшении количества шагов инференса.<br><br>Видео для обучения берут из датасета WebVid. Чтобы сбалансировать данные, авторы находят 10 000 центроид и сэмплируют из них так, чтобы равномерно распределить количество примеров между центроидами. Если в одну центроиду попадает слишком много данных, часть отбрасывают. Так датасет получается разнообразнее.<br><br>У модели несколько видов параллелизма: тензорный (делят слои и FF-блоки между GPU), контекстный (делят токены между процессами) и параллелизм по данным. Это помогает обрабатывать длинные последовательности, возникающие при генерации в высоком разрешении.<br><br>Также модель поддерживает CFG и guidance distillation — учитель и ученик, как обычно. Ученик учится повторять учителя по результатам генерации. Для переписывания промптов используют Hunyuan Large Language Model — особенно если исходный текст слишком технический.<br><br>Есть отдельная аудиомодель, которая по сгенерённому видео создаёт музыку. Она учится на спектрограммах и работает в духе AudioGen.<br><br>Ещё есть возможности персонализации: можно подать референс-картинку и получить видео. Модель справляется с аватарами, движущимися портретами и анимацией объектов.<br><br>Авторы собрали свой бенчмарк из 1533 промптов и сравнились с пятью сильными бейзлайнами. Публикуют не всё: выкладывают 600 промптов. Смотрят на соответствие тексту, движение, визуальное качество и общее впечатление. Их модель лидирует, но не с гигантским отрывом. Оценки FLOPs — без подробностей, так что сравнивать с другими моделями сложно.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Денис Кузнеделев</em><br><a href="https://t.me/+955SbPNeKC5kMTAy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/137_480.webp" srcset="../../assets/media/thumbs/137_480.webp 480w, ../../assets/media/137.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="137" data-image-index="0" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/138_480.webp" srcset="../../assets/media/thumbs/138_480.webp 480w, ../../assets/media/138.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="137" data-image-index="1" /></div></div>
+      <div class="actions">
+        <span>2 245 просмотров · 18 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/137" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-2.html">К списку постов</a> · <a href="./137.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./139.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./129.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 137, "media": [{"kind": "photo", "path": "../../assets/media/137.jpg", "thumb": "../../assets/media/thumbs/137_480.webp", "size": 63839, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/138.jpg", "thumb": "../../assets/media/thumbs/138_480.webp", "size": 56094, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

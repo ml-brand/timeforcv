@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #87</title>
+  <meta name="description" content=" Тематическая подборка статей: генерация   Подобрали свежие статьи о генеративных моделях. В этот раз — обсуждают, как улучшить токенизацию для диффузионных моделей, дистиллировать CFG и оптимизироват" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/87.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #87" />
+  <meta property="og:description" content=" Тематическая подборка статей: генерация   Подобрали свежие статьи о генеративных моделях. В этот раз — обсуждают, как улучшить токенизацию для диффузионных моделей, дистиллировать CFG и оптимизироват" />
+  
+  <meta property="article:published_time" content="2025-04-02T07:38:09+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary" />
+  
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../page-2.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../page-2.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=87" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="87">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-04-02T07:38:09+00:00">2025-04-02 07:38 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Тематическая подборка статей: генерация</strong><br><br>Подобрали свежие статьи о генеративных моделях. В этот раз — обсуждают, как улучшить токенизацию для диффузионных моделей, дистиллировать CFG и оптимизировать обучение генератора. А ещё есть работа о том, как интерпретировать внимание в Diffusion Transformers и использовать его для сегментации.<br><br><strong>Автоэнкодеры</strong><br> <br><a href="https://arxiv.org/pdf/2501.01423v1" rel="nofollow noopener noreferrer"><strong>Reconstruction vs. Generation: Taming Optimization Dilemma in Latent Diffusion Models</strong></a><br>Авторы говорят, что увеличение числа каналов в автоэнкодере улучшает реконструкцию (что логично), но делает задачу для генератора более сложной, приводя к ухудшению генераций. Предлагают дополнительным лоссом предсказывать признаки от бэкбона (dino/mae/etc) — это делает фичи автоэнкодера более «простыми» для генератора и улучшает его сходимость.<br><br><a href="https://arxiv.org/abs/2502.03444" rel="nofollow noopener noreferrer"><strong>Masked Autoencoders Are Effective Tokenizers for Diffusion Models</strong></a><br>Развитие предыдущей работы: связали улучшение качества представления автоэнкодера с уменьшением числа мод в mixture of gaussian модели, и переделали архитектуру автоэнкодера в MAE-трансформер.<br> <br><strong>Эдитинг</strong><br> <br><a href="https://arxiv.org/abs/2502.03629" rel="nofollow noopener noreferrer"><strong>REALEDIT: Reddit Edits As a Large-scale Empirical Dataset for Image Transformations</strong></a><br>В статье предлагают парсить Reddit для сбора датасета по эдитингу картинок: брать треды, где пользователи просят отфотошопить их картинки. Отбирают посты до 2021 года, чтобы в них не было применения AI.<br> <br><strong>Ускорение</strong><br> <br><a href="https://arxiv.org/abs/2502.03726" rel="nofollow noopener noreferrer"><strong>DICE: Distilling Classifier-Free Guidance into Text Embeddings</strong></a><br>Авторы говорят, что можно дистиллировать Classifier-Free Guidance (CFG), включая negative prompt, в небольшую нейронку поверх текстовых эмбеддов.<br> <br><a href="https://arxiv.org/abs/2501.15420" rel="nofollow noopener noreferrer"><strong>Visual Generation Without Guidance</strong></a><br>В статье предлагают алгоритм обучения генератора, для которого потом не нужно делать CFG. Заявляют, что это работает лучше, чем дистилляция.<br> <br><strong>RL</strong><br> <br><a href="https://arxiv.org/abs/2502.02588" rel="nofollow noopener noreferrer"><strong>Calibrated Multi-Preference Optimization for Aligning Diffusion Models</strong></a><br>Исследователи из Google предлагают метод, который, по их утверждению, лучше, чем Direct Preference Optimization (DPO), благодаря аккуратному выбору пар для обучения и более хитрой функции потерь.<br><br><a href="https://arxiv.org/abs/2502.01051" rel="nofollow noopener noreferrer"><strong>Diffusion Model as a Noise-Aware Latent Reward Model for Step-Level Preference Optimization</strong></a><br>Предлагают делать RL непосредственно в латентном пространстве — для этого нужна reward-модель, способная в нём работать. Говорят, что идеально подходит предобученная диффузионная модель, которую можно дообучить на предсказание reward’а. Утверждают, что это упрощает пайплайн обучения и улучшает финальное качество.<br><br><strong>Другое</strong><br><br><a href="https://arxiv.org/html/2502.04320v1" rel="nofollow noopener noreferrer"><strong>ConceptAttention: Diffusion Transformers Learn Highly Interpretable Features</strong></a><br>Авторы говорят, что можно использовать предобученную диффузионную модель для получения SOTA сегментационных масок в zero-shot-режиме. Для этого делают надстройку над аттеншн-слоями в DiT&#x27;е.<br><br><em>Подборку подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Артём Конев<br></em><a href="https://t.me/+955SbPNeKC5kMTAy" rel="nofollow noopener noreferrer">CV Time</a></div>
+      <div class="actions">
+        <span>5 179 просмотров · 22 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/87" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-2.html">К списку постов</a> · <a href="./87.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./88.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./85.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 87, "media": []}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #168</title>
+  <meta name="description" content=" Perception Encoder: The best visual embeddings are not at the output of the network    Сегодня разбираем  статью , авторы которой предлагают простой визуальный энкодер, обученный только на открытых д" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/168.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #168" />
+  <meta property="og:description" content=" Perception Encoder: The best visual embeddings are not at the output of the network    Сегодня разбираем  статью , авторы которой предлагают простой визуальный энкодер, обученный только на открытых д" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/168_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2025-07-22T10:05:45+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/168_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../page-2.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../page-2.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=168" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="168">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-07-22T10:05:45+00:00">2025-07-22 10:05 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Perception Encoder: The best visual embeddings are not at the output of the network </strong><br><br>Сегодня разбираем <a href="https://arxiv.org/abs/2504.13181" rel="nofollow noopener noreferrer">статью</a>, авторы которой предлагают простой визуальный энкодер, обученный только на открытых данных, без сложных архитектур и языковых моделей. Всё обучение — это contrastive learning между изображениями и подписями. Исследователи показывают, что даже в таком режиме можно получить эмбеддинги, которые превосходят существующие модели на стандартных бенчмарках. Главная идея: сильные визуальные представления появляются не обязательно в последнем слое модели, а где-то внутри.<br><br>В архитектуре используется базовая ViT-модель с разрешением 224. При обучении применяются стандартные аугментации, attention pooling через CLS-токен и несколько инженерных приёмов: прогрессивное увеличение разрешения, обучение с большим batch size, оптимизатор LAMB вместо AdamW, маскирование части изображений с регуляризацией (maskfit), RoPE вместе с позиционными эмбеддингами. Вся модель обучается на contrastive loss — пары «изображение-текст» берут из общедоступных коллекций. Чтобы сэкономить вычисления, сначала обучают на низком разрешении, потом повышают до 336. Такой подход не только ускоряет обучение, но и, как утверждают авторы, помогает избежать переобучения позиционных эмбеддингов.<br><br>После обучения на изображениях авторы подключают видео. Они берут небольшой датасет с роликами и описаниями, прогоняют по 8 кадров через perception encoder, усредняют эмбеддинги и обучают contrastive loss на парах «видео-текст». Часть описаний взяли из открытых источников, часть — сгенерировали своей моделью. Для этого они собрали отдельную VLM (PLM), в которую встроили perception encoder и дообучили на видео и картинках с подписями. Модель даёт черновой текст, который потом правят вручную и добавляют метаинформацию — действия, объекты, временные сегменты. Эти описания идут в обучение. Авторы пишут, что это помогает даже в задачах классификации изображений. <br><br>На бенчмарках perception encoder показывает хорошие результаты. Авторы замечают: если взять не последний слой, а, например, 47-й, то на многих задачах это даёт лучший результат. У других моделей эмбеддинги либо слабее в середине, либо не меняются от увеличения модели. У perception encoder эффект усиления заметен.<br><br>Чтобы подключить этот энкодер к языковой модели, обучают projection head на выбранном слое — с температурой и двухслойным MLP. Такой подход даёт выигрыш по качеству по сравнению с head&#x27;ами на других слоях. Чем больше языковая модель — тем выше метрики.<br><br>Однако есть несколько моментов, которые вызывают вопросы. Во-первых, сравнение с конкурентами неполное: в основной статье нет упоминания Qwen, хотя в другом материале от тех же авторов сравнение с ней есть — и Qwen выигрывает по ряду задач. Во-вторых, идея, что видеоданные помогают классификации изображений, не объяснена, авторы не предлагают гипотезу, почему так происходит. В-третьих, подход с выбором «лучшего» слоя работает у их модели, но неясно, насколько он универсален. Отдельно хочется понять, насколько perception encoder стабилен вне тех задач, которые выбрали для оценки.<br><br>В целом статья показывает, что простая архитектура с грамотной инженерией и небольшим дообучением может дать представления, которые хорошо работают на downstream-задачах. Авторы не предлагают революции, но аккуратно исследуют поведение модели и дают полезные практические выводы — особенно про выбор слоя и влияние видеоданных.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Малик Газизуллин</em><br><a href="https://t.me/timeforcv" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/168_480.webp" srcset="../../assets/media/thumbs/168_480.webp 480w, ../../assets/media/168.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="168" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>2 313 просмотров · 26 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/168" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-2.html">К списку постов</a> · <a href="./168.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./169.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./167.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 168, "media": [{"kind": "photo", "path": "../../assets/media/168.jpg", "thumb": "../../assets/media/thumbs/168_480.webp", "size": 93902, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

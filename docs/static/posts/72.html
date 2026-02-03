@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #72</title>
+  <meta name="description" content=" Тематическая подборка статей: генерация   Спешим поделиться очередной подборкой публикаций — на этот раз о генерации.    Обучение     Meissonic: Revitalizing Masked Generative Transformers for Effici" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/72.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #72" />
+  <meta property="og:description" content=" Тематическая подборка статей: генерация   Спешим поделиться очередной подборкой публикаций — на этот раз о генерации.    Обучение     Meissonic: Revitalizing Masked Generative Transformers for Effici" />
+  
+  <meta property="article:published_time" content="2025-02-19T08:04:07+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary" />
+  
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../page-3.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../page-3.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=72" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="72">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-02-19T08:04:07+00:00">2025-02-19 08:04 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Тематическая подборка статей: генерация<br></strong><br>Спешим поделиться очередной подборкой публикаций — на этот раз о генерации. <br><br><strong>Обучение</strong><br><br><a href="https://arxiv.org/abs/2410.08261" rel="nofollow noopener noreferrer"><strong>Meissonic: Revitalizing Masked Generative Transformers for Efficient High-Resolution Text-to-Image Synthesis</strong></a><br>Авторы обучили 1B-трансформер для генерации изображений, используя VQ-VAE и masked image modelling. По словам инженеров, модель достигла уровня SD XL, что они считают успехом.<br><br><a href="https://arxiv.org/abs/2410.11817" rel="nofollow noopener noreferrer"><strong>Improving Long-Text Alignment for Text-to-Image Diffusion Models</strong></a><br>Исследователи пробуют модифицировать Stable Diffusion для работы с длинными текстами. Для этого их нарезают на сегменты, которые по отдельности кодируют через CLIP. Также проанализировали CLIP-реворд, разделив его на text-relevant и text-irrelevant части (последние стремятся сделать картинки более комплексными). Дополнительно в статье показано, что T5-энкодер можно на файнтюне добавлять к CLIP-предобученной модели.<br><br><a href="https://arxiv.org/abs/2410.13863" rel="nofollow noopener noreferrer"><strong>Fluid: Scaling Autoregressive Text-to-image Generative Models with Continuous Tokens</strong></a><strong><br></strong>В статье попарно сравнивают четыре подхода к генерации изображений трансформерами: авторегрессивная генерация vs генерация токенов на рандомных позициях, а также предсказание continuous-токенов vs предсказание дискретных токенов из словаря. <br><br>Побеждает предсказание continuous-токенов на случайных позициях, но авторам не удалось выровнять качество continuous и дискретных автоэнкодеров — эта часть вызывает вопросы. Авторы отдельно замечают, что лосс на валидации хорошо коррелирует с метриками. Об этом упоминалось и в статье о Movie Gen (пункт 3.6.1, абзац «Correlation between validation loss and human evaluation»).<br><br><strong>Бенчмарки<br></strong><br><a href="https://arxiv.org/abs/2410.11824" rel="nofollow noopener noreferrer"><strong>KITTEN: A Knowledge-Intensive Evaluation of Image Generation on Visual Entities</strong></a><br>В работе создали корзину концептов из «Википедии» с изображениями-референсами и замерили на ней Imagen, Flux, Stable Diffusion и прочие модели. Выяснилось, что те из них, что на вход принимают картинку-референс (InstructImagen, DreamBooth), лучше воспроизводят концепты, но часто ценой худшего следования промпту. Также авторы сравнили разметку людьми с автооценкой через CLIP/DINO, и ранжирование моделей поменялось (корреляция 0,3–0,5, что указывает на возможность подобрать лучшие модели).<br><br><strong>Видео</strong><br><br><a href="https://arxiv.org/abs/2410.08260" rel="nofollow noopener noreferrer"><strong>Koala-36M: A Large-scale Video Dataset Improving Consistency between Fine-grained Conditions and Video Content</strong></a><br>Исследователи собрали датасет для обучения видеодиффузионной модели: описали процесс video splitting, схему кэпшнинга и фильтрации. В работе по набору классификаторов учатся предсказывать, насколько видео подходит для добавления в обучающее множество, а также кондишнят генерацию на классификаторы по видео.<br><br><a href="https://arxiv.org/abs/2410.13720" rel="nofollow noopener noreferrer"><strong>Movie Gen: A Cast of Media Foundation Models</strong></a><br>Большая статья, в которой Meta адаптирует архитектуру Llama3 с 30B параметров для генерации видео. Интересные моменты:<br><br>— используют три текстовых энкодера: UL2, ByT5 и CLIP, которые во время обучения считаются на лету;<br>— в ByT5 подают только текст, который нужно отрисовать (предлагают помещать его в кавычки в промпте);<br>— тюнят Llama3 для переформулировки промптов, приближая их к трейну;<br>— добавляют дополнительный лосс для борьбы с точками-артефактами при обучении VAE;<br>— обучение начинается с изображений разрешением 256px;<br>— получают финальную модель путём усреднения весов моделей, дообученных на разных датасетах и гиперпараметрах.<br><br><strong>Другое</strong><br><br><a href="https://arxiv.org/abs/2410.11835" rel="nofollow noopener noreferrer"><strong>On the Effectiveness of Dataset Alignment for Fake Image Detection</strong></a><br>Авторы описывают хитрый способ обучить классификатор синтетических картинок. Для этого реальные изображения (неважно какие) кодируются и декодируются через VAE — и дальше к ним относятся, как к синтетическим.<br><br>Таким образом получается датасет пар картинок, которые отличаются только артефактами VAE — на нём можно обучить детектор синтетических картинок. Но есть нюансы: пайплайн может быть чувствителен к постобработке картинок, и может плохо переноситься на модели с сильно отличающимися VAE.<br><br>Обзор подготовил <tg-emoji emoji-id="5224192932302565805">❣</tg-emoji> Артём Конев<br><br><a href="https://t.me/+955SbPNeKC5kMTAy" rel="nofollow noopener noreferrer">CV Time</a><br>___<br><em>Meta признана экстремистской организацией, а Facebook и Instagram запрещены на территории РФ</em></div>
+      <div class="actions">
+        <span>2 345 просмотров · 18 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/72" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-3.html">К списку постов</a> · <a href="./72.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./74.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./65.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 72, "media": []}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #148</title>
+  <meta name="description" content=" Scaling Vision Pre-Training to 4K Resolution   Большинство доступных визуальных энкодеров предобучено на изображениях низкого разрешения: например, на 378✕378, как SigLIP. Это становится серьёзной пр" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/148.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #148" />
+  <meta property="og:description" content=" Scaling Vision Pre-Training to 4K Resolution   Большинство доступных визуальных энкодеров предобучено на изображениях низкого разрешения: например, на 378✕378, как SigLIP. Это становится серьёзной пр" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/148_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2025-06-26T08:04:55+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/148_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../page-2.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../page-2.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=148" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="148">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2025-06-26T08:04:55+00:00">2025-06-26 08:04 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Scaling Vision Pre-Training to 4K Resolution</strong><br><br>Большинство доступных визуальных энкодеров предобучено на изображениях низкого разрешения: например, на 378✕378, как SigLIP. Это становится серьёзной проблемой, если вы хотите обрабатывать изображения высокого разрешения с мелкими деталями. Дорожный знак STOP будет неразличим, если сжать кадры записи видеорегистратора до 378✕378. То же касается распознавания текста, где много мелких деталей.<br><br>Авторы сегодняшней <a href="https://arxiv.org/abs/2503.19903v1" rel="nofollow noopener noreferrer">статьи</a> отмечают, что в индустрии уже борются с этой проблемой. Методом <a href="https://arxiv.org/pdf/2404.16821" rel="nofollow noopener noreferrer">AnyRes</a> режут большое изображение на части поменьше — тайлы без пересечений. Или, как в <a href="https://arxiv.org/pdf/2403.13043v2" rel="nofollow noopener noreferrer">S2</a>, одновременно ресайзят изображение до нужного размера и делят его оригинал на тайлы, чтобы добавить каналы для описания одних и тех же участков изображения в более высоком разрешении. Но эти методы кодируют картинку заранее — не учитывая запрос пользователя. Логично предположить, что для вопроса, например, про одежду человека, не нужно кодировать автомобили и здания.<br><br>Новое решение, которое предлагают авторы сегодняшней статьи, учитывает промпты пользователя. Они предлагают подбирать куски изображения, которые подходят под запрос, и подмешивать их в инпут. Сделать это можно в два шага:<br><br>1. предобучить энкодер PS3, который сможет угадывать подходящие области изображения;<br>2. обучить VLM отвечать на запросы пользователя вместе c энкодером PS3.<br><br>А если промпта нет и top-down-selection невозможен, можно подключить bottom-up-selection: попросить нейросеть самостоятельно выбрать интересные области. «Интересность» при этом определяется данными, на которых обучалась модель.<br><br>Архитектура PS3 изображена на схеме. На входе — предобученный SigLIP. Энкодим им изображение и получаем low-res-фичи. Из-за ресайза теряются все высокоуровневые фичи. Авторы предлагают исправить это с помощью дополнительного так называемого light-weight-high-res-энкодера (обучаемая урезанная CNN). Третьей фичой будет либо эмбеддинг текста, чтобы выбрать интересный образ, либо обучаемый эмбеддинг, который заменит промпт. По этой тройке для каждой позиции предсказывается вероятность её релевантности: вырезают топ-K областей и энкодят через SigLIP (несколько раз в разных разрешениях). <br><br>Итоговые фичи картинки — исходные low-res и вырезанные топ-K областей. Чтобы подключить PS3 к VLM, понадобится LLM: достаточно передать последний токен из запроса к ней в PS3. Отобрав топ выученных с энкодом позиционных эмбеддов, можно переходить к тренировке language modeling.<br><br>Для эффективного обучения VLM вместе с PS3 нужно дотюнить выбор региона, чтобы подмена не ощущалась. А дальше можно тренировать модель как обычно. <br><br>Модель, которая получилась после подключения PS3 к мультимодальной LLM, авторы назвали VILA-HD. По их замерам, она значительно превосходит по качеству AnyRes и S2, используя при этом в 4,3 раза меньше токенов.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Егор Шестопалов</em><br><em><br></em><a href="https://t.me/+955SbPNeKC5kMTAy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/148_480.webp" srcset="../../assets/media/thumbs/148_480.webp 480w, ../../assets/media/148.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="148" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>2 001 просмотров · 24 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/148" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-2.html">К списку постов</a> · <a href="./148.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link" href="./149.html" style="visibility:visible">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./147.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 148, "media": [{"kind": "photo", "path": "../../assets/media/148.jpg", "thumb": "../../assets/media/thumbs/148_480.webp", "size": 51465, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T13:50:27Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 226, "updated": 0, "media_downloaded": 194}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>

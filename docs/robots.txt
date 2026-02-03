@@ -1,0 +1,8 @@
+# Robots file is auto-generated; base URL is inferred from GitHub Pages when available.
+User-agent: *
+Allow: /
+Allow: /static/
+
+Sitemap: https://ml-brand.github.io/timeforcv/sitemap.xml
+Sitemap: https://ml-brand.github.io/timeforcv/feed.xml
+Sitemap: https://ml-brand.github.io/timeforcv/atom.xml
