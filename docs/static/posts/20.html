@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="../../style.css" />
   <script src="../../metrika.js"></script>
 </head>
-<body data-index-href="../page-3.html">
+<body data-index-href="../page-4.html">
   <header class="header">
     <div class="container">
       <div class="title-grid single-title">
@@ -31,7 +31,7 @@
         </a>
         <div class="grid-main">
           <div class="title-head">
-            <a class="back-link" href="../page-3.html">← Ко всем постам</a>
+            <a class="back-link" href="../page-4.html">← Ко всем постам</a>
             <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
             <div class="hero-actions">
               <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
@@ -60,8 +60,8 @@
       </div>
       <div class="post-body"><strong>Making LLaMA SEE and Draw with SEED Tokenizer</strong><br><br>LLaMA — семейство больших языковых моделей от Meta AI, которые до недавнего времени понимали только текстовые запросы и не умели обрабатывать изображения.<br><br>Популярный подход к тому, чтобы загрузить в такую модель картинку — закодировать изображение в вектор специальным энкодером, привести адаптером в нужную размерность и подать результат на вход нейросети так же, как и текст. А LLaMA вернёт ответ на естественном языке. Например, посчитает для вас яблоки на загруженном фото. <br><br>Так можно решить задачу распознавания, но объединить еë с чем-то другим, например, с генерацией изображений уже не получится. <br><br>Авторы <a href="https://arxiv.org/abs/2310.01218" rel="nofollow noopener noreferrer">сегодняшней статьи</a> попробовали это исправить: добавить к обычной LLaMA токенайзер SEED, чтобы она могла не только распознавать, что изображено на картинке, но и генерировать что-то новое на основе входных данных. <br><br>Суть похода — на схемах. Сначала авторы в несколько стадий обучают картиночные токены на VQ-кодбуках — так токен сразу получает причинное свойство и его остаëтся только векторизировать. Интересно, что сначала обучается именно SEED tokenizer, а после того, как он будет готов, языковую VLM-модель отдельно обучают предсказывать следующие токены, в том числе новые картиночные.<br><br>А дальше детокенайз — через кодбук дискретные коды превращают обратно в вещественные вектора и подают в диффузионную нейросеть. <br><br>Комбинация LLaMA + SEED напоминает по архитектуре <a href="https://arxiv.org/pdf/2307.05222" rel="nofollow noopener noreferrer">EMU</a>. Но если вы внимательно прочитаете статью, о которой я рассказываю, то легко заметите отличительную особенность: множество красивых картинок с результатами, но очень плохие VLM-метрики. Мне удалось пообщаться с авторами, и они честно ответили, что сейчас метрики — не их сильная сторона. Но они продолжают улучшать токенайзер и уже подали на конференцию новую версию — SEED-X. Им удалось избавиться от кодбуков: обучают диффузионную нейросеть теперь на визуальных эмбеддингах. <br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Андрей Чернов</em><br><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/20_480.webp" srcset="../../assets/media/thumbs/20_480.webp 480w, ../../assets/media/20.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="20" data-image-index="0" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/21_480.webp" srcset="../../assets/media/thumbs/21_480.webp 480w, ../../assets/media/21.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="20" data-image-index="1" /></div></div>
       <div class="actions">
-        <span>1 822 просмотров · 40 реакций</span>
-        <span class="action-links"><a href="https://t.me/timeforcv/20" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-3.html">К списку постов</a> · <a href="./20.html">Ссылка на этот пост</a></span>
+        <span>1 823 просмотров · 40 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/20" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-4.html">К списку постов</a> · <a href="./20.html">Ссылка на этот пост</a></span>
       </div>
     </article>
 
@@ -87,7 +87,7 @@
 
   <script>
     window.__STATIC_POSTS = [{"id": 20, "media": [{"kind": "photo", "path": "../../assets/media/20.jpg", "thumb": "../../assets/media/thumbs/20_480.webp", "size": 54471, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/21.jpg", "thumb": "../../assets/media/thumbs/21_480.webp", "size": 63057, "mime": "image/jpeg", "name": null}]}];
-    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T14:29:35Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 121, "updated": 10, "media_downloaded": 121}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-09T14:44:01Z", "posts_count": 106, "last_seen_message_id": 237, "stats": {"new": 122, "updated": 102, "media_downloaded": 122}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
   </script>
   <script src="../../common.js"></script>
   <script src="../../static.js"></script>

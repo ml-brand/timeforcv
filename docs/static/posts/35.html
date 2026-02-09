@@ -59,7 +59,7 @@
       </div>
       <div class="post-body"><strong>DART: Denoising Autoregressive Transformer for Scalable Text-to-Image Generation, часть 1</strong><br><br>Превратить авторегрессионную визуальную генерацию в диффузионную можно, если соблюдать три ограничения: <br><br>1. Фиксировать процесс зашумления. <br>2. Работать в парадигме, где модель зависит только от одного предыдущего состояния, а не от целой последовательности: тогда процесс становится Марковским. <br>3. Взвешивать loss на коэффициенты, которые зависят от timestamp и наложенного шума. <br><br>Авторы сегодняшнего <a href="https://arxiv.org/abs/2410.08159" rel="nofollow noopener noreferrer">препринта</a> предлагают ослабить второе условие: добавить зависимость от предыдущих зашумлённых изображений. Такую модель они называют DART — Denoising Autoregressive Transformer или диффузионная авторегрессионная модель.    <br><br>Саму последовательность при этом можно генерировать по-разному:<br><br>1. На каждом шаге генерировать частично расшумлëнное изображение — такой метод называется DART.<br>2. На каждой стадии расшумления авторегрессионно генерировать изображение по патчам — DART-AR (ДАРТ с авторегрессией). <br>3. Генерировать изображения, последовательно увеличивая их размер — Matryoshka-DART. <br>4. Кроме изображения, генерировать ещë и его текстовое описание — Kaleydo-DART. <br><br>В качестве трансформера для генерации на основе текстового промпта используется предобученная модель Flan-T5-XL, а для генерации на основе заданного класса — дополнительные слои Adaptive LayerNorm.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Александр Шишеня</em><br><a href="https://t.me/+955SbPNeKC5kMTAy" rel="nofollow noopener noreferrer">CV Time</a></div>
       <div class="actions">
-        <span>2 264 просмотров · 20 реакций</span>
+        <span>2 265 просмотров · 20 реакций</span>
         <span class="action-links"><a href="https://t.me/timeforcv/35" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-3.html">К списку постов</a> · <a href="./35.html">Ссылка на этот пост</a></span>
       </div>
     </article>
@@ -86,7 +86,7 @@
 
   <script>
     window.__STATIC_POSTS = [{"id": 35, "media": []}];
-    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T14:29:35Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 121, "updated": 10, "media_downloaded": 121}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-09T14:44:01Z", "posts_count": 106, "last_seen_message_id": 237, "stats": {"new": 122, "updated": 102, "media_downloaded": 122}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
   </script>
   <script src="../../common.js"></script>
   <script src="../../static.js"></script>

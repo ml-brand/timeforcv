@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="../../style.css" />
   <script src="../../metrika.js"></script>
 </head>
-<body data-index-href="../index.html">
+<body data-index-href="../page-2.html">
   <header class="header">
     <div class="container">
       <div class="title-grid single-title">
@@ -31,7 +31,7 @@
         </a>
         <div class="grid-main">
           <div class="title-head">
-            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="back-link" href="../page-2.html">← Ко всем постам</a>
             <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
             <div class="hero-actions">
               <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
@@ -60,8 +60,8 @@
       </div>
       <div class="post-body"><strong>Nexus-Gen: A Unified Model for Image Understanding, Generation, and Editing</strong><br><br>Сегодня разбираем <a href="https://arxiv.org/pdf/2504.21356" rel="nofollow noopener noreferrer">статью</a> о Nexus-Gen — мультимодальной модели от Alibaba, которая задумывалась как полностью открытая: авторы выложили не только код и веса, но и датасет. Модель умеет генерировать и редактировать изображения по текстовым запросам. <br><br>Качество картинок в целом достойное, хотя не всегда удаётся сохранить идентичность объектов при редактировании: при простых изменениях могут искажаться второстепенные детали — например, у человека слегка меняются черты лица, а в интерьере исчезают или трансформируются объекты, которые трогать не просили.<br><br><strong>Архитектура</strong><br><br>В основе модели авторегрессор (Qwen-2.5-VL) в связке с визуальным энкодером и декодером на базе Flux. Архитектура вдохновлена <a href="https://arxiv.org/html/2503.13436v1" rel="nofollow noopener noreferrer">UniFLUID</a>: текст и изображение проходят через общий авторегрессор, а для визуальной части используется отдельный визуальный декодер. В новой версии также добавлен декодер для редактирования изображений, который работает вместе с генеративным.<br><br>Главное улучшение модели связано с проблемой накопления ошибок на непрерывных визуальных токенах. В отличие от текста, где токены дискретны и ошибки не накапливаются, изображения страдают от смещения при последовательной генерации патчей. Авторы предложили решение: ввести специальный обучаемый токен, который обозначает места для генерации визуальных патчей. При обучении он вставляется в последовательность, а при инференсе автоматически генерируется и подаётся в диффузионную голову. Таким образом, модель всегда работает с фиксированным токеном, не накапливая ошибок с предыдущих шагов.<br><br>Для обучения используется комбинация лоссов: кросс-энтропия для текстовых токенов, MSE и косинусная близость — для визуальных. Это позволяет согласовать пространство визуального энкодера и выходы авторегрессора, сохраняя совместимость с диффузионной частью.<br><br><strong>Этапы обучения<br></strong><br>Сначала модель училась на задачах image understanding и image generation без учёта редактирования. На втором этапе задачи редактирования добавлялись в небольшом количестве. На третьем — к обучению подключили новый декодер для задач редактирования, а баланс сместился в сторону таких задач. На заключительном шаге проводили элайнмент между визуальными представлениями на входе и выходе авторегрессора, чтобы стабилизировать работу с диффузией и улучшить согласованность между генеративным и редактирующим декодерами.<br><br><strong>Результаты </strong><br><br>В новой версии Nexus-Gen авторы, наконец, показали количественные результаты: модель на 7B параметров занимает первое место на ряде бенчмарков по пониманию изображений, включая MME-P (1602,3) и TextVQA (75,5). Также она показывает высокий уровень на VQAv2 (79,3) и SEED (77,1), сопоставимый или превосходящий конкурентов ощутимо больших размеров. При этом она сохраняет баланс между пониманием, генерацией и редактированием.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em>  Михаил Колтаков<br></em><a href="https://t.me/+955SbPNeKC5kMTAy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/173_480.webp" srcset="../../assets/media/thumbs/173_480.webp 480w, ../../assets/media/173.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="173" data-image-index="0" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/174_480.webp" srcset="../../assets/media/thumbs/174_480.webp 480w, ../../assets/media/174.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="173" data-image-index="1" /></div></div>
       <div class="actions">
-        <span>1 932 просмотров · 14 реакций</span>
-        <span class="action-links"><a href="https://t.me/timeforcv/173" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./173.html">Ссылка на этот пост</a></span>
+        <span>1 936 просмотров · 14 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/173" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-2.html">К списку постов</a> · <a href="./173.html">Ссылка на этот пост</a></span>
       </div>
     </article>
 
@@ -87,7 +87,7 @@
 
   <script>
     window.__STATIC_POSTS = [{"id": 173, "media": [{"kind": "photo", "path": "../../assets/media/173.jpg", "thumb": "../../assets/media/thumbs/173_480.webp", "size": 86931, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/174.jpg", "thumb": "../../assets/media/thumbs/174_480.webp", "size": 106920, "mime": "image/jpeg", "name": null}]}];
-    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-03T14:29:35Z", "posts_count": 105, "last_seen_message_id": 236, "stats": {"new": 121, "updated": 10, "media_downloaded": 121}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-09T14:44:01Z", "posts_count": 106, "last_seen_message_id": 237, "stats": {"new": 122, "updated": 102, "media_downloaded": 122}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
   </script>
   <script src="../../common.js"></script>
   <script src="../../static.js"></script>
