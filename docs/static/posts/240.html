@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #240</title>
+  <meta name="description" content=" When and why vision-language models behave like bags-of-words, and what to do about it?    Сегодня разбираем не новую, но актуальную  статью  об одной неприятной штуке: bags-of-words-ности CLIP. Друг" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/240.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #240" />
+  <meta property="og:description" content=" When and why vision-language models behave like bags-of-words, and what to do about it?    Сегодня разбираем не новую, но актуальную  статью  об одной неприятной штуке: bags-of-words-ности CLIP. Друг" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/240_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2026-02-17T09:02:25+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/240_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=240" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="240">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2026-02-17T09:02:25+00:00">2026-02-17 09:02 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>When and why vision-language models behave like bags-of-words, and what to do about it? <br></strong><br>Сегодня разбираем не новую, но актуальную <a href="https://arxiv.org/abs/2210.01936" rel="nofollow noopener noreferrer">статью</a> об одной неприятной штуке: bags-of-words-ности CLIP. Другими словами, разберём ситуацию, когда VLM вроде бы должна понимать смысл, порядок и отношения между объектам, но на деле ведёт себя так, будто текст — просто набор слов без структуры. Авторы пытаются выяснить, когда и почему VLM начинают работать как BoW, и можно ли это исправить.<br><br>Для этих целей собрали специальный <strong>бенчмарк ARO</strong> (Attribution, Relation, and Order), который тестирует три вещи:<br><br>1) понимает ли модель отношения между объектами (“horse eats grass” vs “grass eats horse”);<br>2) различает ли она атрибуты (“paved road” vs “white road”);<br>3) чувствительна ли к порядку слов.<br><br>На примерах из Visual Genome делают простой тест: берут картинку и две подписи — правильную и с переставленными словами. Модели должны выбрать корректный вариант, но на графиках видно, что не все уверенно проходят даже порог случайного угадывания — 0,5. Например, Flava в некоторых настройках вообще чаще выбирает неправильные подписи.<br><br>Чтобы расширить тесты, добавляют данные из COCO Order и Flickr Order. Там уже не просто меняют местами два слова, а делают несколько видов искажений:<br>перемешивают существительные и прилагательные, перемешивают почти все слова, перемешивают слова внутри триграмм. Получается набор, где рядом стоит оригинальный текст и несколько сломанных вариантов. И снова видно, что многим моделям всё равно, в каком порядке стоят слова.<br><br><strong>Можно ли обучить CLIP как BoW?<br></strong><br>Дальше проверяют, что будет, если обучить CLIP так, чтобы текстовый энкодер вообще не видел порядок слов. Текст подают как bag-of-words и смотрят retrieval-метрики. Результат печальный: качество падает совсем немного. То есть модель можно обучить на беспорядочных текстах, и она всё равно будет работать почти так же. Это подтверждает идею, что CLIP-подобные модели часто не используют синтаксис и порядок, а просто ловят совпадения слов.<br><br><strong>Эксперимент с картинками<br></strong><br>Авторы делают похожий тест и для визуального энкодера: режут изображение на патчи 3×3 и перемешивают. Качество падает сильнее, но всё равно остаётся приемлемым. То есть даже порядок визуальных частей модели часто не критичен.<br><br><strong>NegCLIP как решение<br></strong><br>В качестве способа исправления авторы предлагают NegCLIP. Идея в том, что стандартный contrastive learning слишком легко проходит на поверхностных совпадениях, поэтому нужно добавлять более жёсткие негативы.<br><br>Вводят два типа таких негативов:<br><br>1) srong alternative images — самые похожие картинки по эмбеддингам CLIP, которые добавляются как сильные негативы;<br>2) targeted negative captions — подписи, где слова специально переставлены или подменены.<br><br>По итоговой диаграмме видно, что NegCLIP заметно улучшает результаты на VG-Relation, VG-Attribution, COCO-Order и Flickr-Order, то есть там, где проверяется не просто совпадение слов, а структура.<br><br>В итоге работа показывает, что многие VLM действительно ведут себя как BoW: им часто всё равно, кто кого ест и в каком порядке стоят слова. Но этот эффект можно ослабить, если в обучении использовать сложные негативные примеры, как в NegCLIP.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Фёдор Притула<br></em><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/240_480.webp" srcset="../../assets/media/thumbs/240_480.webp 480w, ../../assets/media/240.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="240" data-image-index="0" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/241_480.webp" srcset="../../assets/media/thumbs/241_480.webp 480w, ../../assets/media/241.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="240" data-image-index="1" /></div></div>
+      <div class="actions">
+        <span>243 просмотров · 19 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/240" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./240.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link disabled" href="#" style="visibility:hidden">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./238.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 240, "media": [{"kind": "photo", "path": "../../assets/media/240.jpg", "thumb": "../../assets/media/thumbs/240_480.webp", "size": 96358, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/241.jpg", "thumb": "../../assets/media/thumbs/241_480.webp", "size": 44197, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-02-17T09:32:24Z", "posts_count": 108, "last_seen_message_id": 241, "stats": {"new": 124, "updated": 26, "media_downloaded": 124}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>
