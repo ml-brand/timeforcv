@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #246</title>
+  <meta name="description" content=" OmniAlign-V: Towards Enhanced Alignment of MLLMs with Human Preference [2/2]   В первой части разбора рассказали о ключевых проблемах алайнмента VLM и гипотезах авторов. Дальше  статья  сводится к сб" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/246.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #246" />
+  <meta property="og:description" content=" OmniAlign-V: Towards Enhanced Alignment of MLLMs with Human Preference [2/2]   В первой части разбора рассказали о ключевых проблемах алайнмента VLM и гипотезах авторов. Дальше  статья  сводится к сб" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/246_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2026-03-06T08:38:01+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/246_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=246" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="246">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2026-03-06T08:38:01+00:00">2026-03-06 08:38 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>OmniAlign-V: Towards Enhanced Alignment of MLLMs with Human Preference [2/2]<br></strong><br>В первой части разбора рассказали о ключевых проблемах алайнмента VLM и гипотезах авторов. Дальше <a href="https://arxiv.org/abs/2502.18411v1" rel="nofollow noopener noreferrer">статья</a> сводится к сбору данных. Вопросы и ответы генерируются через проприетарные модели, в основном GPT-4o. Самое интересное — как отбирают изображения и какие срезы задач выделяют.<br><br>Авторы хотят собирать open-ended-вопросы, не подразумевающие односложный ответ. Этим пытаются перенести в мультимодальный сеттинг часть навыков, которые обычно хорошо выучиваются из text-only-данных: креативность, генеративные запросы, более развёрнутые ответы.<br><br>По типам задач выделяют два основных среза:<br>1) общий (знания, ризонинг, генеративные сценарии),<br>2) инфографика.<br><br>У каждого среза — свой пайплайн. Сначала идёт фильтрация изображений: убирают самые простые картинки, оценивают визуальную сложность и стараются оставить те, где много объектов. Для этого используют внешние модели.<br><br>Дальше генерация стандартная: few-shot + промптинг GPT-4o для вопросов и ответов. Но на некоторых задачах few-shot работает хуже — там добавляют дополнительные приёмы, чтобы сохранить разнообразие.<br><br>Отдельно описана стадия рефайнмента. QA-пары усложняют и переписывают с помощью LLM, добавляя более строгие требования к форме ответа: ограничения длины, стиль, структура.<br><br>Ещё одна стадия — фильтрация QA-пар. На некоторых срезах, например в графиках, авторы считают, что даже GPT-4o недостаточно надёжна. Тогда используют ансамбль нескольких проприетарных и опенсорсных моделей, сравнивают ответы и либо мёржат, либо фильтруют, чтобы получить более качественную финальную пару.<br><br>В итоге удалось собрать около 200 тысяч QA-пар.<br><br><strong>Бенчмарк MM-AlignBench <br></strong><br>Существующие бенчмарки обычно проверяют только правильность ответа, когда есть ground truth, но не его качество в смысле human preference. Поэтому собирается отдельный небольшой бенчмарк — MM-AlignBench.<br><br>В качестве референса вспоминают попытки сделать VLM-арену, например, WildVision. И используют похожую идею оценки: сравнивают ответы моделей попарно и просят GPT-4o выступить судьёй. Получают вердикт по шкале из нескольких категорий (A лучше B, немного лучше или равны и в обратную сторону). Из этого считают win rate и reward.<br><br><strong>Эксперименты и результаты<br></strong><br>Дальше авторы проводят эксперимент на базе LLaVA-Next: заменяют часть исходных данных на свои новые данные OmniAlign-V и смотрят, что будет с метриками. На прокси-бенчмарках под human preference (WildVision и MM-AlignBench) метрики заметно растут. При этом классические мультимодальные бенчмарки не проседают критично. То есть human preference получилось улучшить, не убив привычные VLM-метрики.<br><br>На текстовых бенчмарках деградация всё ещё остаётся, но становится меньше. Если раньше просадка была около 50 пунктов, теперь стало около 30. Это всё ещё много, но разрушение LLM-навыков VLM стало слабее.<br><br>В итоге получился неплохой бенчмарк, который отражает другие аспекты качества по сравнению с тем, что обычно замеряют в мире VLM. Причём его не просто собрали, но и вывели на лидерборд — вопрос теперь в том, будут ли остальные игроки им пользоваться. Но сам интент двигать оценку в сторону human preference выглядит интересным и полезным.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Алексей Григорьев<br></em><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/246_480.webp" srcset="../../assets/media/thumbs/246_480.webp 480w, ../../assets/media/246.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="246" data-image-index="0" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/247_480.webp" srcset="../../assets/media/thumbs/247_480.webp 480w, ../../assets/media/247.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="246" data-image-index="1" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/248_480.webp" srcset="../../assets/media/thumbs/248_480.webp 480w, ../../assets/media/248.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="246" data-image-index="2" /></div></div>
+      <div class="actions">
+        <span>239 просмотров · 12 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/246" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./246.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link disabled" href="#" style="visibility:hidden">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./245.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 246, "media": [{"kind": "photo", "path": "../../assets/media/246.jpg", "thumb": "../../assets/media/thumbs/246_480.webp", "size": 116332, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/247.jpg", "thumb": "../../assets/media/thumbs/247_480.webp", "size": 129218, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/248.jpg", "thumb": "../../assets/media/thumbs/248_480.webp", "size": 176708, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-03-06T09:21:55Z", "posts_count": 111, "last_seen_message_id": 248, "stats": {"new": 128, "updated": 30, "media_downloaded": 128}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>
