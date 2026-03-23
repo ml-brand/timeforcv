@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #252</title>
+  <meta name="description" content=" Z-Image: An Efficient Image Generation Foundation Model with Single-Stream Diffusion Transformer [3/3]   Продолжаем разбирать большую  статью  о новой генеративной модели Z-Image. В  первой части  по" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/252.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #252" />
+  <meta property="og:description" content=" Z-Image: An Efficient Image Generation Foundation Model with Single-Stream Diffusion Transformer [3/3]   Продолжаем разбирать большую  статью  о новой генеративной модели Z-Image. В  первой части  по" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/252_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2026-03-23T08:21:45+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/252_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=252" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="252">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2026-03-23T08:21:45+00:00">2026-03-23 08:21 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Z-Image: An Efficient Image Generation Foundation Model with Single-Stream Diffusion Transformer [3/3]</strong><br><br>Продолжаем разбирать большую <a href="https://arxiv.org/abs/2511.22699" rel="nofollow noopener noreferrer">статью</a> о новой генеративной модели Z-Image. В <a href="https://t.me/timeforcv/249" rel="nofollow noopener noreferrer">первой части</a> поговорили о пайплайне подготовки данных, <a href="https://t.me/timeforcv/250" rel="nofollow noopener noreferrer">во второй</a> — о тонкостях обучения. А сегодня обсудим архитектуру модели и её обучение. <br> <br>Авторы используют два картиночных энкодера: SigLIP2 и Flux-VAE и один текстовый — Qwen3-4B. Трансформер мультимодальный, диффузионный, Single-Stream. 3D-RoPE стандартное, не такое хитрое, как в Qwen Image.<br><br>Рассмотреть архитектуру модели во всех подробностях можно на схеме. Она довольно стандартная: состоит из  Attention- и FFN-блоков c Gate и Scale. В кондишн из Scale-/ Gate-слоёв прокидывается только время. <br><br>На вход в диффузионную модель как обычно поступают латентны и эмбеддинги промпта. Эмбеддинги конкатенируются вдоль длины последовательности. В editing-режиме на вход также попадают эмбеддинги исходных изображений, полученные из двух картиночных энкодеров, — они также конкатенируются со всем остальным. То есть, на вход Z-Image подаётся вся информация, которая есть в запросе. <br><br>Говоря об обучении, хочется отметить несколько интересных особенностей. Претрейн начинается с text-to-image на изображениях низкого разрешения — 256х256. Так модель учат в общих чертах понимать, как устроены картинки. Авторы утверждают, что на эту стадию уходит почти половина времени: скорее всего, именно это сделало маленькую модель такой эффективной. <br><br>Далее следует omni-часть предобучения: к исходному датасету добавляют изображения произвольного разрешения, editing-данные и различные виды caption’ов.<br><br>После этого — SFT-стадия, где авторы стараются сбалансировать концепты. В процессе обучения для каждого из концептов фиксируется статистика его появлений в батчах. Веса картинок, представляющих разные концепты, перевзвешиваются при сборе следующего батча. Так модель изучает концепты более равномерно.<br><br>Для стабилизации модели ей устраивают несколько SFT-стадий, во время каждой из которых перебалансируют концепты в датасетах. Потом веса полученных моделей усредняют.<br><br>Потом модель дистиллируют при помощи модифицированного DMD, который авторы называют decoupled DMD. От оригинального он отличается тем, что стадии  CFG-Augmentation  и Distribution matching’а разделяют и оптимизируют отдельно.<br><br>В конце модель дообучают при помощи DPO и GRPO для максимального соответствия человеческим ожиданиям. <br><br>Проверенные решения в нетипичных комбинациях позволяют Z-Image показывать хорошие результаты при небольших затратах вычислительных мощностей. Познакомиться с моделью поближе можно на <a href="https://github.com/Tongyi-MAI/Z-Image" rel="nofollow noopener noreferrer">GitHub</a> или <a href="https://huggingface.co/spaces/Tongyi-MAI/Z-Image-Turbo" rel="nofollow noopener noreferrer">HuggingFace</a>. <br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Илларион Дмитриев</em><br><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/252_480.webp" srcset="../../assets/media/thumbs/252_480.webp 480w, ../../assets/media/252.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="252" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>165 просмотров · 8 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/252" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./252.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link disabled" href="#" style="visibility:hidden">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./250.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 252, "media": [{"kind": "photo", "path": "../../assets/media/252.jpg", "thumb": "../../assets/media/thumbs/252_480.webp", "size": 129966, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-03-23T08:34:27Z", "posts_count": 114, "last_seen_message_id": 252, "stats": {"new": 129, "updated": 28, "media_downloaded": 129}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>
