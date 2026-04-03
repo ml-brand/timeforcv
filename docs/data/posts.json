@@ -2263,7 +2263,7 @@
     "html": "<a href=\"https://iclr.cc/virtual/2025/invited-talk/36782\" rel=\"nofollow noopener noreferrer\"><strong>Building Safe and Robust AI Systems</strong></a><strong> — первый Invited Talk </strong><br><br>Хоть название и указывает на AI Safety, поначалу речь шла совсем о другом. Докладчик вспоминал, какими разнообразными и смелыми были идеи в исследованиях прошлых лет — и констатировал некоторый застой в академическом ресёрче. Подробнее об идеях из старых статей:<br><br>— <strong>Input Convex Neural Networks</strong>: построение выпуклой нейросети, которую можно использовать как energy-based модель.<br><br>— <strong>Optimization as a Layer</strong>: слой сети внутри себя решает задачу оптимизации.<br><br>— <strong>Deep Equilibrium Models</strong>: по сути, RNN, но в итоге это направление заглохло, потому что на практике вычислительно сложные модели с малым количеством параметров уступают перепараметризованным.<br><br>— <strong>Fighting Adversarial Samples</strong>: подходы так и не прижились, потому что все методы заметно ухудшают качество, при этом не гарантируют полное избавление от adversarial samples.<br><br>Просим прощения — фото слайдов немного не в фокусе. Но так даже вайбовее и в духе старых статей.<br><br><em>Послушал презентацию и записал тезисы</em> <em><tg-emoji emoji-id=\"5224192932302565805\">❣</tg-emoji></em><em> Александр Шишеня</em><br><a href=\"https://t.me/+955SbPNeKC5kMTAy\" rel=\"nofollow noopener noreferrer\">CV Time</a><br><br>#YaICLR",
     "link": "https://t.me/timeforcv/106",
     "type": "photo",
-    "views": 1512,
+    "views": 1513,
     "forwards": 6,
     "grouped_id": 13964041341750602,
     "media": [
