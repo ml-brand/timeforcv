@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #255</title>
+  <meta name="description" content=" VIBE: Visual Instruction Based Editor [1/2]   Сегодня приступим к разбору  статьи  об эдитинг-модели от коллег из Сбера.  Вторая часть уже опубликована в канале   @c_research  , который ведёт Сергей " />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/255.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #255" />
+  <meta property="og:description" content=" VIBE: Visual Instruction Based Editor [1/2]   Сегодня приступим к разбору  статьи  об эдитинг-модели от коллег из Сбера.  Вторая часть уже опубликована в канале   @c_research  , который ведёт Сергей " />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/255_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2026-04-09T09:34:22+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/255_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=255" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="255">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2026-04-09T09:34:22+00:00">2026-04-09 09:34 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>VIBE: Visual Instruction Based Editor [1/2]<br></strong><br>Сегодня приступим к разбору <a href="https://arxiv.org/abs/2601.02242v1" rel="nofollow noopener noreferrer">статьи</a> об эдитинг-модели от коллег из Сбера. <strong>Вторая часть уже опубликована в канале </strong><strong>@c_research</strong><strong>, который ведёт Сергей Кастрюлин из Yandex Research</strong>. <br><br>Ключевая цель авторов — сделать небольшую и эффективную модель, которая будет быстро инфериться, дёшево учиться и решать задачу instruction-based image editing. То есть выполнять только указанное в инструкции действие (например, добавить шарф), не делая ничего лишнего (не меняя цвет лица, фон и так далее).<br><br>Модель выложена в опенсорс. Она быстрая и при этом действительно компактная, поскольку основана на эффективных базовых блоках — Qwen3-VL-2B-Instruct в качестве текстово-картиночного энкодера и Sana-1.5-1.6B в качестве диффузионного генератора.<br><br>Что касается качества генерации, мы провели внутренние замеры, по которым VIBE показала качество примерно на уровне опенсорсной Bagel. <br><br><strong>Архитектура<br></strong><br>Самое интересное в статье — это внутреннее устройство и обучение системы. Архитектура состоит из двух блоков:<br><br>- небольшой энкодер — <a href="https://arxiv.org/abs/2511.21631" rel="nofollow noopener noreferrer">Qwen3-VL</a> на 2 миллиарда параметров;<br>- базовая диффузионка — <a href="https://arxiv.org/abs/2501.18427" rel="nofollow noopener noreferrer">Sana 1.5</a> на 1,6 миллиарда параметров.<br><br>Напомним, что Sana 1.5 — это работа Nvidia начала прошлого года, где авторы пытаются максимально дёшево обучить быструю диффузионку разумного качества. Нам она запомнилась стратегией переиспользования ранее обученной Sana 1 и тем, как реализован inference-time compute scaling. Авторы генерируют очень много изображений (до 2000 за время обычной генерации), после чего VLM выбирает лучшие — таким образом они «хакают» бенчмарки.<br><br><strong>Как всё работает<br></strong><br>1) VLM обрабатывает входное изображение и промпт. Это стандартная практика, но авторы отдельно подчёркивают, что считают важным выучивание связи между картинкой и промптом именно внутри VLM.<br><br>2) Отдельно для подачи в VLM обучаются <a href="https://arxiv.org/abs/2504.06256" rel="nofollow noopener noreferrer">MetaQueries</a> — полезные добавки-суффиксы к исходному промпту, обогащающие входное представление без модификации весов VLM.<br><br>3) Для задачи редактирования в диффузионку важно как-то подать текстовый кондишен. В работе рассматриваются два способа. <br><br>Первый — трансформерный: изображение разбивается на патчи, получаются картиночные эмбеддинги, которые конкатенируются с текстовыми и подаются одной последовательностью. <br><br>Второй — более классический: поканальная конкатенация. Кондишен-картинка конкатенируется с шумом, из которого генерируется изображение. После этого всё подаётся в свёрточный слой увеличенной размерности.<br><br>С одной стороны, авторы пишут, что вариант с единой последовательностью работает лучше. Такой вывод не вызывает удивление, поскольку возможность одинаково обрабатывать картинки и тексты на входе — очень полезная фишка трансформерных моделей. Но в финальной системе авторы используют именно конкатенацию, потому что она не увеличивает длину последовательности и экономит время инференса.<br><br>То есть, имея диффузионный трансформер, авторы всё равно делают поканальную конкатенацию со свёрткой, а затем работают с патч-эмбеддингами свёрточных представлений. Это решение — довольно нестандартное.<br><br>Во <a href="https://t.me/c_research/284" rel="nofollow noopener noreferrer">второй части</a> разобрали, как устроено обучение модели, зачем используются Meta Queries и какие данные применяются для тренировки.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Сергей Кастрюлин<br></em><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/255_480.webp" srcset="../../assets/media/thumbs/255_480.webp 480w, ../../assets/media/255.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="255" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>303 просмотров · 10 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/255" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./255.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link disabled" href="#" style="visibility:hidden">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./254.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 255, "media": [{"kind": "photo", "path": "../../assets/media/255.jpg", "thumb": "../../assets/media/thumbs/255_480.webp", "size": 59869, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-04-09T10:45:19Z", "posts_count": 117, "last_seen_message_id": 255, "stats": {"new": 129, "updated": 36, "media_downloaded": 129}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>
