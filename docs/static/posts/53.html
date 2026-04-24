@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="../../style.css" />
   <script src="../../metrika.js"></script>
 </head>
-<body data-index-href="../page-3.html">
+<body data-index-href="../page-4.html">
   <header class="header">
     <div class="container">
       <div class="title-grid single-title">
@@ -31,7 +31,7 @@
         </a>
         <div class="grid-main">
           <div class="title-head">
-            <a class="back-link" href="../page-3.html">← Ко всем постам</a>
+            <a class="back-link" href="../page-4.html">← Ко всем постам</a>
             <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
             <div class="hero-actions">
               <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
@@ -61,7 +61,7 @@
       <div class="post-body"><strong>LLaVa-CoT: Let Vision Language Models Reason Step-by-Step</strong><br><br>Сегодня разберём <a href="https://huggingface.co/papers/2411.10440" rel="nofollow noopener noreferrer">статью</a> о подходе к обучению и инференсу VLM, вдохновлённом o1-preview от OpenAI.<br><br>Авторы начали со сбора 100 тысяч сэмплов из открытых VQA-бенчмарков (и пообещали выложить получившийся датасет!). Потом для этих сэмплов с помощью GPT-4o сгенерировали CoT-синтетику со следующими блоками: <br><br><tg-emoji emoji-id="5341470192595653209">⚪</tg-emoji>Summary — развернутое описание решаемой проблемы; <br><tg-emoji emoji-id="5341470192595653209">⚪</tg-emoji>Caption — описание изображения с учетом деталей, релевантных задаче;<br><tg-emoji emoji-id="5341470192595653209">⚪</tg-emoji>Reasoning — step-by-step решение задачи;<br><tg-emoji emoji-id="5341470192595653209">⚪</tg-emoji>Conclusion — финальный ответ.<br><br>После на этих данных сделали full-finetune поверх Llama-3.2-11B-Vision-Instruct (кстати, всего на восьми H100). <br><br>Уже на этом этапе модель стала заметно умнее своего бейзлайна: 56,6 → 63,5 средних попугаев. Но авторы выбили еще полтора попугая за счет собственного inference-time скейлинга: Stage level Beam Search. По сути, это обычный BS. Только ветвление происходит на уровне целых блоков CoT, а не на уровне отдельных предложений.<br><br>По замерам авторов, их модель в максимальном сетапе обходит Gemini-1.5-Pro и приближается к Claude3.5-Sonnet (см. табличку). До GPT-4o, правда, еще далековато.<br><br><em>Обзор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Павел Штыков</em><br><a href="https://t.me/+955SbPNeKC5kMTAy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/53_480.webp" srcset="../../assets/media/thumbs/53_480.webp 480w, ../../assets/media/53.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="53" data-image-index="0" /></div></div>
       <div class="actions">
         <span>2 191 просмотров · 21 реакций</span>
-        <span class="action-links"><a href="https://t.me/timeforcv/53" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-3.html">К списку постов</a> · <a href="./53.html">Ссылка на этот пост</a></span>
+        <span class="action-links"><a href="https://t.me/timeforcv/53" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../page-4.html">К списку постов</a> · <a href="./53.html">Ссылка на этот пост</a></span>
       </div>
     </article>
 
@@ -87,7 +87,7 @@
 
   <script>
     window.__STATIC_POSTS = [{"id": 53, "media": [{"kind": "photo", "path": "../../assets/media/53.jpg", "thumb": "../../assets/media/thumbs/53_480.webp", "size": 92614, "mime": "image/jpeg", "name": null}]}];
-    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-04-24T06:29:11Z", "posts_count": 119, "last_seen_message_id": 257, "stats": {"new": 128, "updated": 7, "media_downloaded": 128}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-04-24T08:35:36Z", "posts_count": 120, "last_seen_message_id": 261, "stats": {"new": 132, "updated": 32, "media_downloaded": 132}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
   </script>
   <script src="../../common.js"></script>
   <script src="../../static.js"></script>
