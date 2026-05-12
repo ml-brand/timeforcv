@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #267</title>
+  <meta name="description" content=" Neural Optimal Transport   Сегодня разбираем  статью , авторы которой предлагают учить отображение между распределениями с помощью нейросетей. Основная задача, которая тут решается, — перевод изображ" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/267.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #267" />
+  <meta property="og:description" content=" Neural Optimal Transport   Сегодня разбираем  статью , авторы которой предлагают учить отображение между распределениями с помощью нейросетей. Основная задача, которая тут решается, — перевод изображ" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/267_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2026-05-12T13:06:16+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/267_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=267" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="267">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2026-05-12T13:06:16+00:00">2026-05-12 13:06 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Neural Optimal Transport<br></strong><br>Сегодня разбираем <a href="https://arxiv.org/abs/2201.12220" rel="nofollow noopener noreferrer">статью</a>, авторы которой предлагают учить отображение между распределениями с помощью нейросетей. Основная задача, которая тут решается, — перевод изображений из одного домена в другой. Причём как в детерминированном варианте (один к одному), так и в стохастическом (один ко многим).<br><br>Сначала немного предыстории. У нас есть два распределения, и хочется перетащить одно в другое с минимальным костом. Кост — это метрика, измеряющая среднее расстояние между объектом из исходного распределения и целевого. Он может быть как сильным, то есть измеряющим расстояние между двумя объектами, так и слабым, где расстояние берётся между исходным объектом <em>х</em> и распределением объектов отображения, которое он собой задаёт. Слабый кост — это по сути параметрический интеграл, а не обычная функция. Он берёт на вход не две переменные, а переменную и вероятностную меру — поэтому работать с ним довольно тяжело. В классических подходах кост используется именно сильный.<br><br>Классическая формулировка Монжа предлагает детерминированное отображение, где каждому <em>х </em>соответствует один <em>у</em>. Но это плохо работает, когда нужно отображать один объект в несколько возможных, ведь распределения могут быть разной структуры. Канторович в 1958 году предложил вместо отображения брать совместное распределение <em>π</em>. Но за это платим сложностью: всё становится сильно тяжелее и менее удобным для обучения.<br><br>Авторы идут дальше. Вместо того чтобы напрямую работать с этим распределением π и условным распределением <em>p(y|x)</em>, которое появляется при переходе от сильного коста к слабому, они предлагают параметризовать отображение x шумом: берём <em>x</em> и случайную переменную <em>z</em>, и уже функция <em>T(x, z)</em> выдаёт результат, лежащий в целевом распределении. За счёт этого условное распределение получается само собой: для одного <em>x</em> можно получать разные y просто благодаря разному <em>z</em>. <br><br>Чтобы это оптимизировать, переходят к двойственной задаче. Появляется функция <em>f</em> — её можно воспринимать как вспомогательную. В итоге всё сводится к двум объектам: есть <em>T</em>, которое отвечает за транспорт; есть <em>f</em>, которое участвует в оценке качества этого транспорта. Остаётся задать <em>T </em>и <em>f</em> как нейросетевые функции и приступить к оптимизации.<br><br>В итоге приходим к задаче min-max оптимизации, чем-то схожей с GAN: одна нейросеть максимизирует полученный функционал, другая минимизирует. По <em>f</em> делается градиентный подъём, по <em>T</em> — спуск. Но по смыслу это не совсем генератор и дискриминатор в привычном виде — здесь это просто способ решить двойственную задачу. Все интегралы просто оцениваются через Монте-Карло без доптрюков.<br><br>На практике это даёт гибкость. Авторы предлагают параметр для функции коста, отвечающий за дисперсию шума: если его занулить, в ходе оптимизации получаем детерминированное отображение — один x всегда переходит в один и тот же y. Если его увеличивать, появляется разнообразие, и можно получать разные варианты для одного входа, при этом чем больше будет этот параметр, тем хаотичнее будет распределение. При этом вся постановка остаётся в рамках одной схемы с двумя сетями.<br><br>В экспериментах стандартные примеры с переводом изображений сравниваются с GAN-подходами. Картинки выглядят адекватно, метрики тоже улучшаются, а сама модель получается компактнее по количеству компонентов.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Иван Папай<br></em><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/267_480.webp" srcset="../../assets/media/thumbs/267_480.webp 480w, ../../assets/media/267.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="267" data-image-index="0" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/268_480.webp" srcset="../../assets/media/thumbs/268_480.webp 480w, ../../assets/media/268.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="267" data-image-index="1" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/269_480.webp" srcset="../../assets/media/thumbs/269_480.webp 480w, ../../assets/media/269.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="267" data-image-index="2" /></div></div>
+      <div class="actions">
+        <span>221 просмотров · 8 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/267" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./267.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link disabled" href="#" style="visibility:hidden">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./265.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 267, "media": [{"kind": "photo", "path": "../../assets/media/267.jpg", "thumb": "../../assets/media/thumbs/267_480.webp", "size": 48991, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/268.jpg", "thumb": "../../assets/media/thumbs/268_480.webp", "size": 167109, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/269.jpg", "thumb": "../../assets/media/thumbs/269_480.webp", "size": 73870, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-05-12T13:24:45Z", "posts_count": 125, "last_seen_message_id": 269, "stats": {"new": 135, "updated": 39, "media_downloaded": 135}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>
