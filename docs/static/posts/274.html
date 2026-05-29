@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #274</title>
+  <meta name="description" content=" Как мы научили модель понимать структуру архивных записей   В  Поиске по архивам  появилась новая модель, которая не только распознаёт текст, но и извлекает связи между людьми — например, определяет," />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/274.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #274" />
+  <meta property="og:description" content=" Как мы научили модель понимать структуру архивных записей   В  Поиске по архивам  появилась новая модель, которая не только распознаёт текст, но и извлекает связи между людьми — например, определяет," />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/274_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2026-05-29T11:35:01+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/274_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=274" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="274">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2026-05-29T11:35:01+00:00">2026-05-29 11:35 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Как мы научили модель понимать структуру архивных записей<br></strong><br>В <a href="https://yandex.ru/archive" rel="nofollow noopener noreferrer">Поиске по архивам</a> появилась новая модель, которая не только распознаёт текст, но и извлекает связи между людьми — например, определяет, кто в документе отец, мать, жених, невеста, свидетель и прочее. Это умение очень важно, чтобы действительно помогать пользователям находить родственников. <br><br>Дарья Виноградова, руководитель команды универсального применения компьютерного зрения в Яндексе, и Анна Сидорова, главный разработчик распознавания архивов, рассказали <a href="https://habr.com/ru/companies/yandex/articles/1038044/" rel="nofollow noopener noreferrer">на Хабре</a>, почему универсальные VLM-модели не подошли для этой задачи и как удалось перейти от распознавания текста к извлечению структуры и смысла из документов.<br><br><strong>Как было раньше<br></strong><br>Прошлая версия системы представляла собой классический OCR-пайплайн. Детектор находил на скане строки, OCR-модель распознавала их по отдельности, а другая модель собирала в текстовые блоки.<br><br>Поиск работал в основном по текстовым совпадениям. Из-за этого вместе с нужными данными в выдачу попадали имена священников, номера записей, служебные пометки и другие нерелевантные части документа. Со временем проблемы стали чаще возникать на уровне структуры документа — из-за разбиения текста на строки и последующей склейки.<br><br><strong>Как модель научили понимать структуру документов<br></strong><br>В новой версии OCR остаётся отдельным этапом, но сам пайплайн строится уже вокруг структуры документа. <br><br><blockquote>По сути, перед нами стояла KIE-задача (Key Information Extraction) — нужно было по изображению документа извлекать ключевую информацию о людях и их ролях. Но довольно быстро стало понятно, что работать со страницей целиком не получится. Типичный архивный скан имеет размер больше 2500 пикселей по стороне, содержит сразу несколько записей, а суммарно в них может упоминаться до 35 человек. Такой объём информации слишком большой и для модели, и для обучения. Поэтому мы решили сначала находить на странице отдельные записи — о рождении, браке или смерти — а уже потом извлекать информацию о людях из каждой выделенной области.</blockquote><br><br>Для этого используют дообученную <a href="https://habr.com/ru/companies/yandex/articles/974594/" rel="nofollow noopener noreferrer">VLM‑модель Alice AI</a>. Она получает изображение записи вместе с текстом от OCR и извлекает из документа структуру и связи между людьми. Ключевая метрика — доля людей, которых затем можно корректно найти по ФИО в сервисе. По ней модель достигает качества 90,5% на всех типах архивных записей.<br><br><strong>Как усовершенствовали OCR<br></strong><br>Параллельно команда перешла от строкового OCR к блочному. Так удалось убрать целый этап сборки строк в блоки, сократить количество моделей в пайплайне и уменьшить объём дополнительного процессинга при обработке сканов.<br><br>Однако переход к блочной архитектуре сильно усложнил требования к детектору. Если раньше ошибка означала, что какие-то строки просто плохо склеятся, то теперь модель рисковала целиком потерять нужный фрагмент документа.<br><br>При этом сами блоки оказались очень разными по размеру: модель могла получить как маленький кусок с одним словом, так и огромный фрагмент на много строк. Из-за этого команде пришлось отдельно дорабатывать энкодер и оптимизировать токенизацию — иначе обработка больших блоков становилась слишком дорогой по вычислениям.<br><br>После перехода на новый OCR-пайплайн recall распознавания вырос до 93,2% на основной выборке и до 88,1% — на сложной. <br><br>Детали реализации и сложные кейсы распознавания вы найдёте <a href="https://habr.com/ru/companies/yandex/articles/1038044/" rel="nofollow noopener noreferrer">в полной версии статьи</a>. <br><br><a href="https://t.me/MLunderhood" rel="nofollow noopener noreferrer">ML Underhood</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/274_480.webp" srcset="../../assets/media/thumbs/274_480.webp 480w, ../../assets/media/274.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="274" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>318 просмотров · 18 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/274" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./274.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link disabled" href="#" style="visibility:hidden">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./273.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 274, "media": [{"kind": "photo", "path": "../../assets/media/274.jpg", "thumb": "../../assets/media/thumbs/274_480.webp", "size": 47212, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-05-29T13:49:36Z", "posts_count": 130, "last_seen_message_id": 274, "stats": {"new": 136, "updated": 51, "media_downloaded": 135}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>
