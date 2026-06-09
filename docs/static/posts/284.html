@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #284</title>
+  <meta name="description" content=" Thinking with Visual Primitives    Сегодня в области мультимодальных моделей основной упор делают на языковой ризонинг. А для VLM интересно было бы перенести его в визуальное пространство. В своей  с" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/284.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #284" />
+  <meta property="og:description" content=" Thinking with Visual Primitives    Сегодня в области мультимодальных моделей основной упор делают на языковой ризонинг. А для VLM интересно было бы перенести его в визуальное пространство. В своей  с" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/284_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2026-06-09T09:27:30+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/284_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=284" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="284">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2026-06-09T09:27:30+00:00">2026-06-09 09:27 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Thinking with Visual Primitives <br></strong><br>Сегодня в области мультимодальных моделей основной упор делают на языковой ризонинг. А для VLM интересно было бы перенести его в визуальное пространство. В своей <a href="https://github.com/ailuntx/Thinking-with-Visual-Primitives/blob/main/Thinking_with_Visual_Primitives.pdf" rel="nofollow noopener noreferrer">статье</a> авторы из DeepSeek предлагают делать это с помощью визуальных примитивов: точек и bounding-боксов. <br><br>Архитектура решения довольно стандартная. Берут DeepSeek-V4 (LLaVA) на 284 млрд параметров (13 млрд — активных) и прикручивают к нему трансформер DeepSeek-ViT. Он кодирует картинку размером 756x756 с помощью 324 визуальных токенов.<br><br>Стадии обучения следующие:<br><br><strong>1. Pretraining <br></strong><br>Добавляют дополнительные данные, чтобы модель уже на претрейне хорошо видела визуальные токены. Для этого кроулят Hugging Face и другие источники — и собирают почти 98 тысяч датасетов, которые затем фильтруют по качеству и покрытию разметки. В итоге остаётся около 32 тысяч датасетов. Bounding-боксы и точки задают в текстовом формате, а весь претрейн занимает триллионы мультимодальных токенов. <br><br><strong>2. ColdStart Data<br></strong><br>Для cold-start собирают отдельные датасеты по разным срезам: counting, spatial reasoning, vqa, maze navigation, path tracing. Counting делится на coarse-grained-задачи («посчитай всех медведей») и fine-grained-задачи («посчитай всех медведей, которые находятся на земле»).<br><br>Для fine-grained counting используют GQA и граф-сцены, с помощью которых генерируют более сложные запросы. Также для задач Spatial Reasoning и VQA берут реальные картинки из GQA, но такие данные получаются слишком простыми, поэтому дополнительно добавляют синтетику из CLEVR — датасета с искусственно сгенерированными сценами.<br>Чтобы избежать галлюцинаций, добавляют негативные семплы. Например, модель просят найти медведей на сцене, где медведей на самом деле нет. <br><br><strong>3. Specialized SFT и Specialized RL<br></strong><br>На стадии Specialized SFT учат две модели, стартуя с общего претрейна: одну на данных с bounding-боксами, другую — на данных с точками.<br><br>После SFT специализированные модели отдельно дообучают через GRPO. Используют три типа ревордов: на формат, качество (проверяют избыточность CoT, консистентность с ответом и прочее) и точность ответа. Для лабиринтов и path tracing добавляют дополнительные проверки, чтобы модель не хакала задачу и не строила неверные траектории. Для RL выбирают примеры, где модель отвечает не идеально, но хотя бы иногда правильно.<br><br><strong>4. Unified RFT  <br></strong><br>Затем специализированными RL-моделями генерируют данные, на которых обучают единую модель. Для этого объединяют данные с bounding-боксами, точками и chain-of-thought.<br><br><strong>5. On-Policy Distillation<br></strong><br>Получившуюся модель дистиллируют сразу на две специализированные модели-учителя. После модель оценивают на counting, general VQA и других публичных visual reasoning-бенчмарках. Авторы пишут, что по качеству она конкурирует с Gemini 2.5 Flash и часто показывает первое или второе место.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Александр Шишеня</em><br><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/284_480.webp" srcset="../../assets/media/thumbs/284_480.webp 480w, ../../assets/media/284.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="284" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>305 просмотров · 11 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/284" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./284.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link disabled" href="#" style="visibility:hidden">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./279.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 284, "media": [{"kind": "photo", "path": "../../assets/media/284.jpg", "thumb": "../../assets/media/thumbs/284_480.webp", "size": 32632, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-06-09T10:24:14Z", "posts_count": 134, "last_seen_message_id": 284, "stats": {"new": 139, "updated": 44, "media_downloaded": 139}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>
