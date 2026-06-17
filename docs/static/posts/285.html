@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #285</title>
+  <meta name="description" content=" Несколько идей о perception и reasoning в VLM   Глобально качество любой мультимодальной модели строится на трёх вещах: knowledge — визуальных и текстовых знаниях, заложенных в модель; perception — у" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/285.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #285" />
+  <meta property="og:description" content=" Несколько идей о perception и reasoning в VLM   Глобально качество любой мультимодальной модели строится на трёх вещах: knowledge — визуальных и текстовых знаниях, заложенных в модель; perception — у" />
+  
+  <meta property="article:published_time" content="2026-06-17T09:55:54+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary" />
+  
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=285" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="285">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2026-06-17T09:55:54+00:00">2026-06-17 09:55 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Несколько идей о perception и reasoning в VLM</strong><br><br>Глобально качество любой мультимодальной модели строится на трёх вещах: knowledge — визуальных и текстовых знаниях, заложенных в модель; perception — умении хорошо понимать изображение; и reasoning — её способности учитывать эти два пункта и делать по ним выводы. Сегодня делимся подборкой на эту тему от руководителя команды претрейна VLM Данила Кашина.<br><br><strong>VLM Perception</strong><br><br><a href="https://arxiv.org/abs/2502.17028v1" rel="nofollow noopener noreferrer"><strong>Distributional Vision-Language Alignment by Cauchy-Schwarz Divergence<br></strong></a><br>CLIP и другие VLM обучаются через InfoNCE, который максимизирует mutual information (MI). Но высокий MI не гарантирует близость распределений, поэтому текстовые и визуальные эмбеддинги могут оставаться разделёнными. В качестве решения авторы используют разложение “InfoNCE = alignment + uniformity” и добавляют дивергенцию Коши-Шварца для согласования распределений модальностей.<br><br><a href="https://arxiv.org/abs/2510.23479v3" rel="nofollow noopener noreferrer"><strong>MergeMix: A Unified Augmentation Paradigm for Visual and Multi-Modal Understanding<br></strong></a><br>В работе хотят сделать дешевле стадию DPO, для которой обычно нужна ручная разметка preference-пар. Вместо этого предлагают генерировать пары автоматически с помощью аугментаций. Берут изображение, подмешивают часть другого изображения и используют ответ для второго изображения как негативный, а ответ для исходного — как позитивный. Для этого применяют MergeMix — комбинацию ToMe-attention, mixup и SimPO. ToMe во время форварда объединяет похожие визуальные токены, что позволяет аккуратно переносить части одного изображения в другое. На полученных аугментациях делают обучение. <br><br><a href="https://arxiv.org/abs/2509.26625v1" rel="nofollow noopener noreferrer"><strong>Learning to See Before Seeing: Demystifying LLM Visual Priors from Language Pre-training<br></strong></a><br>Исследуют, как текстовый претрейн влияет на качество мультимодальных моделей. Во-первых, скейлинг оказывается неоднородным: для одних задач важнее размер модели, для других — объём данных. Во-вторых, для визуально-языкового ризонинга лучше работают сильные ризонинг-источники из текстового претрейна — код, математика и академические тексты. В-третьих, на визуальное восприятие сильно влияет качество визуального энкодера, и что интересно, качество на perception-based-задачах в процессе обучения быстро выходит на плато.<br><br><strong>VLM Reasoning<br></strong><br><a href="https://arxiv.org/abs/2506.07218" rel="nofollow noopener noreferrer"><strong>Perception-R1: Advancing Multimodal Reasoning Capabilities of MLLMs via Visual Perception Reward<br></strong></a><br>RL улучшает ответы модели, но почти не влияет на её способность видеть изображение. Поэтому к RLVR добавляют награду за атомарные визуальные факты (atomic visual facts), извлечённые из изображений. Так модель получает сигнал не только за правильный ответ, но и за правильное восприятие картинки.<br><br><a href="https://arxiv.org/abs/2510.08964v1" rel="nofollow noopener noreferrer"><strong>Unleashing Perception-Time Scaling to Multimodal Reasoning Models<br></strong></a><br>В обычных VLM perception — очень короткая фаза. Модель быстро переводит изображение в текстовое пространство и дальше рассуждает уже текстом. Чтобы это исправить, предлагают сделать perception длиннее и структурированнее за счёт перевода некоторых объектов с изображений в символьный вид. Это даёт дополнительный сигнал для RL, и мультимодальный ризонинг улучшается.<br><br><a href="https://arxiv.org/abs/2505.17018v2" rel="nofollow noopener noreferrer"><strong>SophiaVL-R1: Reinforcing MLLMs Reasoning with Thinking Reward<br></strong></a><br>Подход к оцениванию качества цепочки рассуждения, где предлагают добавлять reward за него. А чтобы избежать reward hacking, проверяют, различает ли верификатор правильные и неправильные ответы. Если да — используют его сигнал для обучения, если нет — отбрасывают такие примеры.<br><br><a href="https://arxiv.org/abs/2508.05612v2" rel="nofollow noopener noreferrer"><strong>Shuffle-R1: Efficient RL framework for Multimodal Large Language Models via Data-centric Dynamic Shuffle<br></strong></a><br>Решают проблему эффективности RL-дообучения. Оставляют самые контрастные пары с большим различием в реворде, а затем делают семплирование с возвращением, где вероятность выбора зависит от разницы между наградами. Чем контрастнее пара, тем чаще она попадает в обучение. За счёт этого растёт энтропия и RL-обучение становится лучше.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Данил Кашин</em><br><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer">CV Time</a></div>
+      <div class="actions">
+        <span>456 просмотров · 28 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/285" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./285.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link disabled" href="#" style="visibility:hidden">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./284.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 285, "media": []}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-06-17T12:40:23Z", "posts_count": 135, "last_seen_message_id": 285, "stats": {"new": 139, "updated": 61, "media_downloaded": 138}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>
