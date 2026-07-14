@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #293</title>
+  <meta name="description" content=" Что нового в архитектуре Alice AI ART 2.0     В Алисе AI и Шедевруме теперь работает Alice AI ART 2.0 — это большой шаг к созданию unified-модели, которая одинаково хорошо умеет генерировать и редакт" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/293.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #293" />
+  <meta property="og:description" content=" Что нового в архитектуре Alice AI ART 2.0     В Алисе AI и Шедевруме теперь работает Alice AI ART 2.0 — это большой шаг к созданию unified-модели, которая одинаково хорошо умеет генерировать и редакт" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/293_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2026-07-14T10:23:21+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/293_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=293" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="293">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2026-07-14T10:23:21+00:00">2026-07-14 10:23 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Что нового в архитектуре Alice AI ART 2.0</strong><br><strong><br></strong>В Алисе AI и Шедевруме теперь работает Alice AI ART 2.0 — это большой шаг к созданию unified-модели, которая одинаково хорошо умеет генерировать и редактировать картинки. Команда генеративных моделей в компьютерном зрении рассказала <a href="https://habr.com/ru/companies/yandex/articles/1058630/" rel="nofollow noopener noreferrer">на Хабре</a> об экспериментах на пути к решению — удачных и не очень. В этом разборе сосредоточимся на архитектурной части.<br><br><strong>Несколько вводных<br></strong><br>В мультимодальном ассистенте <a href="https://alice.yandex.ru/" rel="nofollow noopener noreferrer">Алиса AI</a> есть два базовых сценария: T2I и I2I. До релиза они жили как два разных стека — каждый со своими моделями, данными и метриками. И сейчас мы сделали большой шаг их объединению в модели. <br><br>В Alice AI ART 1.0 был классический для T2I диффузионный свёрточный генератор с текстовым энкодером на базе LLM. А редактирование работало на своей базовой модели и своём пайплайне инференса. Это приносило много сложностей в разработке и продуктизации. <br><br>Хотелось свести две модели в одну и при этом поднять качество каждой. <br><br><strong>Unified-претрейн<br></strong><br>Главный герой решения — общий претрейн на данных обоих типов («текст → картинка» и «картинка + инструкция → картинка»). Была гипотеза, что общий визуальный и текстовый контекст перетекает между задачами и улучшает качество. Например, концепты, выученные на T2I, становятся доступны в I2I без дополнительного сбора данных. И это действительно подтвердилось.<br><br><strong>Что поменялось в архитектуре<br></strong><br><tg-emoji emoji-id="5289629688224841126">🔴</tg-emoji>Заменили бэкбон со свёрточной модели на MMDiT‑трансформер с single‑stream‑архитектурой. Теперь текст и входная картинка представляются как токены в одной последовательности, и обрабатывать оба сценария проще.<br><tg-emoji emoji-id="5289629688224841126">🔴</tg-emoji>Использовали общий аттеншн для текстовых и визуальных токенов вместо двух раздельных.<br><tg-emoji emoji-id="5289629688224841126">🔴</tg-emoji>Добавили U‑RoPE — позиционное кодирование, которое поддерживает разные разрешения и конкатенацию «картинка + текст».<br><tg-emoji emoji-id="5289629688224841126">🔴</tg-emoji>Увеличили размер модели для совместной задачи T2I + I2I;<br><tg-emoji emoji-id="5289629688224841126">🔴</tg-emoji>Заменили текстовый энкодер с LLM на VLM, обученный на паре «текст + картинка»). Это  улучшило понимание связи текста и изображения.<br><br><strong>Результаты<br></strong><br>В обеих задачах модель стала заметно лучше прошлой версии и по нашим замерам сейчас занимает второе место после Gemini 3.1 Flash.<br><br>Ещё один показатель — это реакция пользователей. Число скачиваний результатов генерации и редактирования выросло на 37 %, а запросов на генерацию с персонажем стало больше на 23 %.<br><br>Больше подробностей найдёте <a href="https://habr.com/ru/companies/yandex/articles/1058630/" rel="nofollow noopener noreferrer">в хабростатье</a>.<br><br><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/293_480.webp" srcset="../../assets/media/thumbs/293_480.webp 480w, ../../assets/media/293.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="293" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>311 просмотров · 16 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/293" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./293.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link disabled" href="#" style="visibility:hidden">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./290.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 293, "media": [{"kind": "photo", "path": "../../assets/media/293.jpg", "thumb": "../../assets/media/thumbs/293_480.webp", "size": 63007, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-07-14T11:12:19Z", "posts_count": 140, "last_seen_message_id": 293, "stats": {"new": 142, "updated": 43, "media_downloaded": 142}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>
