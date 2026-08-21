@@ -5691,7 +5691,7 @@
     "html": "<strong>ICLR — всё, но мы продолжаем</strong><br><strong><br></strong>У нас ещё остались обзоры интересных постеров. Сегодня расскажем о двух моделях: одна — на тему агентного визуального поиска, другая — о поиске изменённых областей в изображениях и видео.<br><br><a href=\"https://arxiv.org/abs/2509.07969v1\" rel=\"nofollow noopener noreferrer\"><strong>Mini-o3: Scaling Up Reasoning Patterns and Interaction Turns for Visual Search</strong></a><br><br>Модель для сложного визуального поиска, которая действует как агент: делает много шагов, приближает нужные области, проверяет гипотезы, ошибается, возвращается и продолжает поиск.<br><br>Авторы создали датасет Visual Probe с тысячами сложных задач, собрали обучающие траектории с разными паттернами рассуждений — depth-first search, trial-and-error, удержание цели — и вводят over-turn masking, чтобы во время RL не штрафовать модель за слишком длинные незавершённые попытки. В результате Mini-o3, даже обучаясь максимум на шести шагах, на инференсе умеет масштабироваться до десятков шагов, и точность растёт с увеличением числа шагов.<br><br><a href=\"https://arxiv.org/abs/2508.09459\" rel=\"nofollow noopener noreferrer\"><strong>RelayFormer: A Unified Local-Global Attention Framework for Scalable Image and Video Manipulation Localization</strong></a><br><br>RelayFormer — модель для поиска изменённых областей в изображениях и видео. Идея в том, чтобы не сжимать картинку целиком и не терять мелкие forensic-артефакты, а разрезать её на небольшие перекрывающиеся фрагменты (overlapping sub-images) и обрабатывать их в исходном качестве. Каждый кусок обрабатывается отдельно, но между ними есть специальные GLR-токены — своего рода relay-посредники, которые собирают локальные признаки, обмениваются глобальным контекстом и возвращают его обратно. После этого mask decoder строит маску изменённых пикселей.<br><br><em>Интересное заметила </em><em><tg-emoji emoji-id=\"5224192932302565805\">❣</tg-emoji></em><em> Варвара Фурик<br></em><br>#YaICLR26<br><br><a href=\"https://t.me/+SSca5c9pEyszN2Uy\" rel=\"nofollow noopener noreferrer\">CV Time</a>",
     "link": "https://t.me/timeforcv/265",
     "type": "photo",
-    "views": 1754,
+    "views": 1755,
     "forwards": 11,
     "grouped_id": 14223831104833978,
     "media": [
@@ -6540,8 +6540,8 @@
     "html": "<strong>Курс по Visual GenAI от Yandex Research и ШАД</strong><br><br>Авторы CV Time не только пишут обзоры статей о компьютерном зрении, но и создают обучающие курсы. <br><br>Сегодня делимся курсом ШАДа «Генеративные модели в компьютерном зрении», который ведёт Дмитрий Баранчук, руководитель группы GenAI в Yandex Research, вместе с праймовой командой исследователей в этой области.<br><br>Будет полезно тем, у кого есть базовые знания по генеративкам и желание разобраться глубже:<br><br>• в теории диффузионных моделей, эффективных методах их обучения и семплирования;<br>• в новых гибридных моделях на основе диффузии для генерации изображений, видео и 3D.<br><br>У курса есть открытый <a href=\"https://github.com/dbaranchuk/VisualGenAI/tree/main\" rel=\"nofollow noopener noreferrer\">GitHub-репозиторий</a>, где можно найти слайды, записи лекций и семинаров, а также домашние задания.<br><br><a href=\"https://t.me/+SSca5c9pEyszN2Uy\" rel=\"nofollow noopener noreferrer\">CV Time</a>",
     "link": "https://t.me/timeforcv/296",
     "type": "photo",
-    "views": 24703,
-    "forwards": 810,
+    "views": 24714,
+    "forwards": 811,
     "grouped_id": null,
     "media": [
       {
