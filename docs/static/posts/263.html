@@ -60,7 +60,7 @@
       </div>
       <div class="post-body"><a href="https://arxiv.org/abs/2512.05150v2" rel="nofollow noopener noreferrer"><strong>TwinFlow: Realizing One-step Generation on Large Models with Self-adversarial Flows<br></strong></a><br>Авторы презентуют метод пошаговой дистилляции диффузионных моделей, который работает без вспомогательных моделей, в отличие от общепринятых техник вроде consistency models, ADD и DMD2.<br><br>Конкретно предлагают отразить временную ось относительно нуля — в результате диффузионный процесс происходит на интервале [-1, 1]. Причём участку [-1, 0] соответствует путь из шума в данные, сгенерированные самой моделью — «фейковые данные».<br><br>Задача модели в процессе оптимизации — минимизировать разницу между скоростями для «фейковых» (при отрицательных временах) и реальных (при положительных временах) данных. В точке оптимума обе скорости совпадают.<br><br>Итоговый лосс — сумма функции потерь из RCGM (некоторого обобщения MeanFlow для многошаговой генерации) и матчинга распределений для «фейковых» и реальных данных.<br><br>Полученный метод достигает хорошего качества почти без просадки по сравнению с базовой Qwen-Image и на одном уровне с Qwen-Image-Lightning. При этом сам фреймворк проще, и ожидается, что он меньше просаживает разнообразие.<br><br><em>Интересное заметил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Денис Кузнеделев<br></em><br>#YaICLR26<br><br><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer">CV Time</a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/263_480.webp" srcset="../../assets/media/thumbs/263_480.webp 480w, ../../assets/media/263.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="263" data-image-index="0" /></div></div>
       <div class="actions">
-        <span>1 651 просмотров · 22 реакций</span>
+        <span>1 652 просмотров · 22 реакций</span>
         <span class="action-links"><a href="https://t.me/timeforcv/263" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./263.html">Ссылка на этот пост</a></span>
       </div>
     </article>
@@ -87,7 +87,7 @@
 
   <script>
     window.__STATIC_POSTS = [{"id": 263, "media": [{"kind": "photo", "path": "../../assets/media/263.jpg", "thumb": "../../assets/media/thumbs/263_480.webp", "size": 149341, "mime": "image/jpeg", "name": null}]}];
-    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-08-26T18:23:35Z", "posts_count": 147, "last_seen_message_id": 300, "stats": {"new": 141, "updated": 21, "media_downloaded": 141}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-08-26T21:14:32Z", "posts_count": 147, "last_seen_message_id": 300, "stats": {"new": 141, "updated": 13, "media_downloaded": 141}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
   </script>
   <script src="../../common.js"></script>
   <script src="../../static.js"></script>
