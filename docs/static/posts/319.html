@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #319</title>
+  <meta name="description" content=" Trustworthy Image Authentication using Forensic Knowledge Graphs   На ECCV 2026 прослеживались два основных направления по детекции AIGI (AI-generated images):   • обобщающие подходы, которые пытаютс" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/319.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #319" />
+  <meta property="og:description" content=" Trustworthy Image Authentication using Forensic Knowledge Graphs   На ECCV 2026 прослеживались два основных направления по детекции AIGI (AI-generated images):   • обобщающие подходы, которые пытаютс" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/319_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2026-09-14T12:33:07+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/319_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=319" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="319">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2026-09-14T12:33:07+00:00">2026-09-14 12:33 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Trustworthy Image Authentication using Forensic Knowledge Graphs<br></strong><br>На ECCV 2026 прослеживались два основных направления по детекции AIGI (AI-generated images): <br><br>• обобщающие подходы, которые пытаются строить решения независимо от конкретных генераторов, чтобы не переучиваться под новые;<br>• объясняемые подходы на базе VLM, где модель отвечает, почему изображение поддельное. <br><br>Разбираемая <a href="https://arxiv.org/abs/2606.23917v1" rel="nofollow noopener noreferrer">статья</a> интересна тем, что фокусируется сразу на обоих эти обоих направлениях.<br><br>Авторы обучают self-supervised-эмбеддер на неразмеченных фотографиях. Получают fingerprint изображения, который отражает не семантику или содержание, а низкоуровневые особенности, связанные с тем, как изображение было сформировано. Для этого эмбеддинги патчей одной фотографии сближают, а разных фотографий — отдаляют.<br><br>Дальше картинка режется на патчи, для каждого считается такой отпечаток, и патчи с похожими отпечатками склеиваются в области. <br><br>Потом эмбеддинги патчей области усредняются, и отдельные модели-эксперты (MLP) предсказывают источник (камера или генератор), постобработку и сжатие (JPEG-параметры), а трансформер-ризонер сверху увязывает эти предсказания между собой. <br><br>Всё собирается в граф: изображение → области → источник, постобработка, сжатие. <br><br>В самом конце подключается VLM, которая переводит граф в текстовое описание с проверкой, что каждое утверждение опирается на факты из графа.<br><br>Такой подход позволяет единой системой находить и обосновывать разные манипуляции: сплайсинг (вставка одного изображения в другое), классическую локальную обработку (блюр), локальное AI-редактирование и полностью сгенерированные изображения. Например, разные источники у областей выдают сплайсинг, смесь камерных и синтетических отпечатков — AI-редактирование, а отсутствие камерных отпечатков вовсе — полную генерацию.<br><br>#YaECCV2026<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Евгений Кузнецов</em><br><br><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer"><u>CV Time</u></a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/319_480.webp" srcset="../../assets/media/thumbs/319_480.webp 480w, ../../assets/media/319.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="319" data-image-index="0" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/320_480.webp" srcset="../../assets/media/thumbs/320_480.webp 480w, ../../assets/media/320.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="319" data-image-index="1" /><img class="media-img" loading="lazy" src="../../assets/media/thumbs/321_480.webp" srcset="../../assets/media/thumbs/321_480.webp 480w, ../../assets/media/321.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="319" data-image-index="2" /></div></div>
+      <div class="actions">
+        <span>427 просмотров · 22 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/319" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./319.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link disabled" href="#" style="visibility:hidden">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./315.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 319, "media": [{"kind": "photo", "path": "../../assets/media/319.jpg", "thumb": "../../assets/media/thumbs/319_480.webp", "size": 201061, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/320.jpg", "thumb": "../../assets/media/thumbs/320_480.webp", "size": 175342, "mime": "image/jpeg", "name": null}, {"kind": "photo", "path": "../../assets/media/321.jpg", "thumb": "../../assets/media/thumbs/321_480.webp", "size": 160114, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-09-14T14:25:33Z", "posts_count": 152, "last_seen_message_id": 321, "stats": {"new": 158, "updated": 65, "media_downloaded": 158}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>
