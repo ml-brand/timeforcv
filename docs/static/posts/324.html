@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #324</title>
+  <meta name="description" content=" Четыре способа испортить предсказание диффузионной модели   Сегодня делимся обзором четырёх работ, в которых генерацию улучшают, отталкиваясь от специально испорченного предсказания. Посмотрим на раз" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/324.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #324" />
+  <meta property="og:description" content=" Четыре способа испортить предсказание диффузионной модели   Сегодня делимся обзором четырёх работ, в которых генерацию улучшают, отталкиваясь от специально испорченного предсказания. Посмотрим на раз" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/324_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2026-09-29T09:39:05+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/324_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=324" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="324">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2026-09-29T09:39:05+00:00">2026-09-29 09:39 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Четыре способа испортить предсказание диффузионной модели<br></strong><br>Сегодня делимся обзором четырёх работ, в которых генерацию улучшают, отталкиваясь от специально испорченного предсказания. Посмотрим на разные методы такой «порчи» и полученные результаты.<br><br><a href="https://arxiv.org/abs/2406.02507v1" rel="nofollow noopener noreferrer"><strong>Guiding a Diffusion Model with a Bad Version of Itself</strong></a><br><br>Для начала вспомним CFG (Classifier-free guidance). При обучении модели в части случаев (скажем, 10%) подаётся пустой кондишн. При сэмплировании получают conditional- и unconditional-предсказания и экстраполируют от второго в сторону первого.<br><br>CFG улучшает качество и соответствие условию, но при этом снижает разнообразие генераций. Авторы предлагают метод Autoguidance — вместо unconditional-предсказания берут предсказание ухудшенной версии той же conditional-модели, например, недообученной или уменьшенной.<br>И тут надо понять, как именно должна быть ухудшена вторая модель. В аблейшнах авторы сравнивают разные варианты. <br><br>• Если обе ветки ухудшены одним способом, но с разной силой, экстраполяция может компенсировать ухудшение (например, для моделей с постфактум добавленным дропаутом разной силы FID удалось снизить с 5 до 2,55 — практически до уровня исходной модели с FID 2,56). <br><br>• Если же характер ошибок различается — например, одна ветка испорчена дропаутом, а другая шумом — guidance не помогает, лучший FID получается при scale = 1, то есть без экстраполяции.<br><br>Основная идея Autoguidance в том, что плохая модель должна делать ошибки того же характера, что и хорошая, только сильнее.<br><br><a href="https://arxiv.org/abs/2403.17377v1" rel="nofollow noopener noreferrer"><strong>Self-Rectifying Diffusion Sampling with Perturbed-Attention Guidance</strong></a><br><br>Авторы заходят с чуть другой стороны и предлагают метод PAG (Perturbed-Attention Guidance). В одном или нескольких аттеншн-блоках строят ухудшенное предсказание, заменяя attention map на единичную матрицу. Получается, что каждый токен смотрит только на себя — и пространственное взаимодействие между токенами в этом блоке пропадает. При генерации отталкиваются от этого ухудшенного предсказания.<br><br>В эксперименте на Stable Diffusion 1.5 PAG дал более низкий FID, чем CFG. При этом методы можно сочетать, и вместе они показывают ещё более высокое качество.<br><br><a href="https://arxiv.org/abs/2508.12880" rel="nofollow noopener noreferrer"><strong>Stochastic Self-Guidance for Training-Free Enhancement of Diffusion Models</strong></a><br><br>Здесь плохое предсказание получают за счёт того, что на каждом шаге диффузии случайно выбирают 10% трансформер-блоков и пропускают их. При попытке реализовать этот метод мы столкнулись с тем при дропе трансформер-блоков на изображениях действительно появлялось больше деталей. Но одновременно картинки становились заметно более тусклыми, хотя авторы такого эффекта не упоминают. Код они пообещали выложить, но пока его нет. Хотелось бы посмотреть на реализацию авторов.<br><br><a href="https://arxiv.org/abs/2604.08048" rel="nofollow noopener noreferrer"><strong>Guiding a Diffusion Model by Swapping Its Tokens<br></strong></a><br>Получают плохое предсказание с помощью перестановки самых непохожих токенов в отдельных блоках модели. Авторы предлагают два варианта: перемешивать сами токены или их каналы. Первый не дал заметного прироста, а с увеличением скейла качество генераций ухудшалось. Перемешивание каналов оказалось ещё нестабильнее, и даже при небольшом скейле изображения разваливались. <br><br>Во всех этих методах критичным оказывается выбор способа построения ухудшенного предсказания. Само по себе более сильное искажение не делает guidance эффективнее: если оно слишком сильно меняет структуру предсказания или вносит ошибки не в тех местах, где ошибается основная модель, качество генерации быстро падает.<br><br><em>Разбор подготовил </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Лавр Плисковский</em><br><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer"><u>CV Time</u></a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/324_480.webp" srcset="../../assets/media/thumbs/324_480.webp 480w, ../../assets/media/324.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="324" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>570 просмотров · 21 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/324" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./324.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link disabled" href="#" style="visibility:hidden">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./323.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 324, "media": [{"kind": "photo", "path": "../../assets/media/324.jpg", "thumb": "../../assets/media/thumbs/324_480.webp", "size": 57387, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-09-29T14:21:54Z", "posts_count": 155, "last_seen_message_id": 324, "stats": {"new": 158, "updated": 44, "media_downloaded": 158}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>
