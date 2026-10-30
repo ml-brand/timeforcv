@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #329</title>
+  <meta name="description" content=" Perception or Reasoning? Diagnosing and Tackling Reinforcement Learning Bottlenecks in VLMs   Разбираем  статью , в которой авторы исследуют, почему RL хорошо улучшает ризонинг мультимодальных моделе" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/329.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #329" />
+  <meta property="og:description" content=" Perception or Reasoning? Diagnosing and Tackling Reinforcement Learning Bottlenecks in VLMs   Разбираем  статью , в которой авторы исследуют, почему RL хорошо улучшает ризонинг мультимодальных моделе" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/329_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2026-10-30T08:35:08+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/329_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=329" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="329">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2026-10-30T08:35:08+00:00">2026-10-30 08:35 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Perception or Reasoning? Diagnosing and Tackling Reinforcement Learning Bottlenecks in VLMs</strong><br><br>Разбираем <a href="https://arxiv.org/abs/2610.21380" rel="nofollow noopener noreferrer">статью</a>, в которой авторы исследуют, почему RL хорошо улучшает ризонинг мультимодальных моделей, но гораздо хуже справляется с визуальным восприятием. Исправить это предлагают через дистилляцию аттеншна.<br><br><strong>Первая интересная идея — ошибки на визуальных бенчмарках не</strong> <strong>обязательно связаны со способностями, которые они проверяют.</strong> Например, модель может ошибаться не из-за плохого ризонинга, а потому, что неправильно считывает информацию с изображения.<br><br>Чтобы разделить эти случаи, предлагают <strong>PARA</strong> — метод оценки perception и reasoning headroom, то есть доли ошибок, которые можно исправить улучшением соответствующей способности.<br><br>Для этого используют две сильные референсные модели — <strong>Claude Opus 4.8 и GPT-5.6-Luna</strong> — и проводят два эксперимента:<br><br>• <strong>Perception Intervention</strong>. Сильная модель подробно описывает изображение, а исходная VLM повторно решает задачу с этим описанием (отдельно или вместе с оригинальной картинкой).<br><br>• <strong>Reasoning Intervention</strong>. Исходная VLM описывает изображение, а сильная модель решает задачу только по описанию. Дополнительно проверяют, что референсная модель сама способна решить задачу по оригинальному изображению.<br><br><strong>Важный момент</strong> <strong>— PARA оценивают всего на 200 примерах каждого бенчмарка из-за вычислительных ограничений.</strong> Как конкретно отбирали эти примеры, описано в статье.<br><br>При этом набор бенчмарков интересный: BLINK, PerceptionBench, VisNumBench, HallusionBench, LogicVista, MathVista, MathVerse и другие — всего 17. Оказывается, боттлнек зависит от конкретной модели: так, на MME у Qwen преобладает reasoning headroom, а у Gemma — perception.<br><br><strong>Дальше авторы показывают, что обычный RL лучше использует reasoning headroom.</strong> Прирост от RL снижается, когда больше ошибок исправимо улучшением perception, и растёт, когда преобладают боттелнеки в ризонинге.<br><br>Авторы связывают это с тем, что награда за итоговый результат не различает ошибки восприятия и рассуждения. А методы вроде Vision-SR1 и VPPO влияют на визуальное внимание лишь косвенно, через изменение advantage и градиентов по логитам выходных токенов.<br><br><strong>Чинить это предлагают с помощью GRAD — Group-Relative Attention Distillation.</strong><br><br>В OPAD неуспешный роллаут отталкивается от своего предыдущего аттеншна. Но ведь модель могла правильно посмотреть на изображение и ошибиться уже в ризонинге!<br><br>GRAD вместо этого заставляет роллауты с отрицательным advantage перенимать визуальный аттеншн лучшего роллаута из той же группы. Чем хуже роллаут, тем сильнее дистилляция. Внешний учитель и дополнительные аннотации не нужны.<br><br>В результате GRAD улучшает средний score относительно GRPO на <strong>+2</strong>,<strong>9/2</strong>,<strong>5 пункта усреднённой метрики</strong> для Qwen3-VL-2B/4B и превосходит Vision-SR1, VPPO и OPAD по среднему результату. Perception headroom снижается на пять из семи бенчмарков против двух у GRPO.<br><br>Если выбирать случайный роллаут вместо лучшего, Avg. падает с 49,4 до 45,5 — даже ниже GRPO. Лучше всего работает supervision только последнего слоя декодера с λ = 1.<br><br><strong>Что вызывает вопросы<br></strong><br>Лучший по реворду роллаут необязательно обладает лучшим визуальным аттеншном — правильный ответ может получиться благодаря ризонингу или случайной догадке. Кроме того, снижение PH после обучения может объясняться изменением состава оставшихся ошибок, а не только улучшением perception.<br><br><strong>Самое интересное в работе — использование собственных успешных</strong> <strong>роллаутов модели как источника supervision для визуального восприятия. </strong>Более общий вывод: научить VLM правильно отвечать и научить её действительно лучше воспринимать изображения — не одно и то же.<br><br>Хочется отметить качество экспериментальной части: авторы провели подробные аблейшны, привели гиперпараметры и настройки обучения. А в приложении оставили достаточно деталей, чтобы разобраться в реализации метода и попробовать воспроизвести результаты.<br><br><em>Разбор подготовила </em><em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji></em><em> Арина Гертель<br></em><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer"><u>CV Time</u></a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/329_480.webp" srcset="../../assets/media/thumbs/329_480.webp 480w, ../../assets/media/329.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="329" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>245 просмотров · 20 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/329" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./329.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link disabled" href="#" style="visibility:hidden">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./326.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 329, "media": [{"kind": "photo", "path": "../../assets/media/329.jpg", "thumb": "../../assets/media/thumbs/329_480.webp", "size": 61314, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-10-30T09:00:00Z", "posts_count": 158, "last_seen_message_id": 329, "stats": {"new": 160, "updated": 23, "media_downloaded": 160}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>
