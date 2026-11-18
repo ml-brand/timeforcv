@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #332</title>
+  <meta name="description" content=" Correction Training for Diffusion Models     Сегодня разбираем  статью , которая собрала немало хайпа. Авторы предлагают перенести идею self-correction из диффузионных языковых моделей в генерацию из" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/332.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #332" />
+  <meta property="og:description" content=" Correction Training for Diffusion Models     Сегодня разбираем  статью , которая собрала немало хайпа. Авторы предлагают перенести идею self-correction из диффузионных языковых моделей в генерацию из" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/332_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2026-11-18T08:48:58+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/332_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=332" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="332">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2026-11-18T08:48:58+00:00">2026-11-18 08:48 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>Correction Training for Diffusion Models</strong><br><strong><br></strong>Сегодня разбираем <a href="https://arxiv.org/abs/2610.14136" rel="nofollow noopener noreferrer">статью</a>, которая собрала немало хайпа. Авторы предлагают перенести идею self-correction из диффузионных языковых моделей в генерацию изображений. Идея простая, но результаты впечатляют. К тому же в работе много интересных абляций.<br><br>Основная мотивация — уменьшить exposure bias. Во время обучения денойзер работает с реальными изображениями, к которым добавили шум, а на инференсе — уже с собственными предсказаниями. Из-за этого ошибки могут накапливаться от шага к шагу, что хорошо видно на картинке выше (бейзлайн).<br><br>Чтобы решить эту проблему, авторы предлагают добавить к основному денойзеру отдельную модель-корректор:<br><br><code>L_corr = Eₓ,ε,t[||C_φ(sg(x̂⁽⁰⁾), t) − x||₂²]</code><br><code><br></code>Денойзер предсказывает x₀ на шаге t, после чего корректор пытается приблизить это предсказание к исходному изображению. При этом корректор учитывает timestep, но дополнительный шум не добавляется. В итоге получаем два лосса: для денойзера и корректора.<br><br>Интересно, что при обучении корректор можно применять всего единожды, а на инференсе — несколько раз подряд, последовательно уточняя одно и то же предсказание x₀.<br><br>Посмотрим на некоторые абляции.<br><br>Начнём с того, что немного смущает. Основные эксперименты проводятся с файнтюнингом предобученных DiT, SiT и JiT. Денойзер и корректор инициализируют весами исходной модели, после чего дообучают. Эксперимент с обучением с нуля тоже есть, но хотелось бы увидеть его в большем масштабе.<br><br>При этом результаты действительно впечатляют. После 4 млн итераций обучения дальнейший файнтюнинг обычного денойзера почти ничего не меняет, а добавление корректора даёт заметный прирост качества. На картинках видно, что общая композиция часто сохраняется, а детали и структура объектов улучшаются. Особенно заметен прирост в unconditional-генерации. В text-to-image метод тоже работает, причём как с CFG, так и без него.<br><br>Авторы также проверяют коррекцию с общими весами денойзера и корректора, чтобы показать, что улучшения связаны именно с процедурой, а не просто с увеличением числа параметров.<br><br>Ещё одна интересная абляция — количество коррекций на трейне и инференсе. При одном шаге на обучении оптимально около трёх шагов коррекции на инференсе, после чего качество начинает ухудшаться. Если обучать с двумя, тремя или четырьмя шагами, оптимум смещается примерно к четырём, шести и восьми соответственно.<br><br>Также авторы смотрят, на каких этапах генерации лучше применять коррекцию. Для JiT наибольший эффект дают ранние шаги, когда шума ещё много. Возможно, дело в том, что исправление ранних предсказаний x₀ помогает избежать накопления ошибок на последующих шагах.<br><br>Пожалуй, самое интересное в этой работе — не столько возможность исправлять предсказания денойзера, а то, что одну и ту же процедуру можно применять многократно, даже если модель обучалась на меньшем числе коррекций.<br>По сути, авторы показывают ещё один способ использовать дополнительные вычисления на инференсе: не делать больше шагов денойзинга, а несколько раз уточнять уже полученное предсказание.<br><br>При этом остаются вопросы, почему такая итеративная коррекция работает настолько хорошо и эффективен ли метод при обучении с нуля. Но сама идея выглядит перспективно. Возможно, для улучшения диффузионных моделей не всегда нужно усложнять денойзер — иногда достаточно научить его исправлять собственные ошибки.<br><br><em>Разбор подготовил </em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji> <em>Никита Стародубцев </em><br><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer"><u>CV Time</u></a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/332_480.webp" srcset="../../assets/media/thumbs/332_480.webp 480w, ../../assets/media/332.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="332" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>559 просмотров · 24 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/332" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./332.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link disabled" href="#" style="visibility:hidden">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./331.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 332, "media": [{"kind": "photo", "path": "../../assets/media/332.jpg", "thumb": "../../assets/media/thumbs/332_480.webp", "size": 103624, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-11-18T13:27:33Z", "posts_count": 161, "last_seen_message_id": 332, "stats": {"new": 160, "updated": 46, "media_downloaded": 160}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>
