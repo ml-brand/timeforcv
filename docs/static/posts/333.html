@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV Time — пост #333</title>
+  <meta name="description" content=" On-Policy Self-Distillation in Diffusion Models   Разбираем DiffusionOPSD —  статью  от ByteDance, в которой предлагают способ self-дистилляции, продолжающий идеи Diffusion NFT.  Впечатление от работ" />
+  <link rel="icon" href="../../favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://ml-brand.github.io/timeforcv/static/posts/333.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CV Time — пост #333" />
+  <meta property="og:description" content=" On-Policy Self-Distillation in Diffusion Models   Разбираем DiffusionOPSD —  статью  от ByteDance, в которой предлагают способ self-дистилляции, продолжающий идеи Diffusion NFT.  Впечатление от работ" />
+  <meta property="og:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/333_480.webp" />
+  <meta property="og:image:alt" content="CV Time" />
+  <meta property="article:published_time" content="2026-11-24T10:23:31+00:00" />
+  <meta property="article:author" content="CV Time" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ml-brand.github.io/timeforcv/assets/media/thumbs/333_480.webp" />
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="../../metrika.js"></script>
+</head>
+<body data-index-href="../index.html">
+  <header class="header">
+    <div class="container">
+      <div class="title-grid single-title">
+        <a class="grid-avatar" href="#" target="_blank" rel="noopener">
+          <img id="channelAvatar" class="channel-avatar" src="../../assets/channel_avatar.jpg" alt="Аватар канала"  />
+        </a>
+        <div class="grid-main">
+          <div class="title-head">
+            <a class="back-link" href="../index.html">← Ко всем постам</a>
+            <a class="badge-chip" id="siteTitleWrap" href="#" target="_blank" rel="noopener"><h1 id="siteTitle">CV Time</h1></a>
+            <div class="hero-actions">
+              <a id="subscribeBtn" class="subscribe-btn" href="https://t.me/+JoULEedmHyE5MmYy" target="_blank" rel="noopener" >Подписаться</a>
+              <a class="icon-btn" href="../../post.html?id=333" aria-label="Открыть динамическую страницу поста">↺</a>
+              <button id="themeToggle" class="icon-btn" type="button" aria-label="Переключить тему"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div id="promoBanner" class="promo-banner" hidden>
+    <div class="container promo-inner">
+      <span class="promo-text"><a href="https://t.me/addlist/5NH3RoVejEI1MGEy">Подпишись на все наши ML каналы. Они классные, отвечаем!</a></span>
+      <button id="promoClose" class="promo-close" type="button" aria-label="Скрыть плашку">×</button>
+    </div>
+  </div>
+  
+
+  <main class="container single-page">
+    <article id="postContainer" class="post post-page" data-post-id="333">
+      <div class="post-header">
+        <div class="right"><span class="post-date" data-iso-date="2026-11-24T10:23:31+00:00">2026-11-24 10:23 UTC</span></div>
+      </div>
+      <div class="post-body"><strong>On-Policy Self-Distillation in Diffusion Models<br></strong><br>Разбираем DiffusionOPSD — <a href="https://arxiv.org/abs/2608.24646" rel="nofollow noopener noreferrer">статью</a> от ByteDance, в которой предлагают способ self-дистилляции, продолжающий идеи Diffusion NFT.<br><br>Впечатление от работы смешанное, из-за избыточных обозначений и инженерных деталей. Но на самом деле идея интересная и несложная.<br><br>Допустим, мы работаем с text-to-image и через flow matching хотим получить финальную картинку X0. Есть много reward-based-подходов, но везде возникает проблема.<br><br>Основные части композиции закладываются в самом начале денойзинга. Если что-то нарисовалось совсем плохо, исправлять это нужно на ранних стадиях. При этом реворд получаем для финальной картинки, а чтобы оптимизировать всю траекторию, нужно прокидывать градиент через реворд-модель и много шагов диффузии.<br><br> Есть разные решения.<br><br>- <strong>ReFL</strong> предлагает на поздних стадиях делать одношаговое предсказание X0 и прокидывать градиент только через этот скачок. Но нужен дифференцируемый реворд, а изменения плохо дотягиваются до ранних шагов.<br><br>- <strong>FlowGRPO</strong> использует RL: каждый стейт диффузии рассматривается как стейт агента, а переходы оптимизируются через policy gradient.<br><br>- <strong>Diffusion NFT</strong> обходится без сложной оптимизации policy gradient. Собираем хорошие и плохие примеры и обучаем модель через contrastive learning, притягивая предсказание ученика к положительным и отталкивая от отрицательных с учётом реворда.<br><br>Эту идею продолжает OPSD.<br><br>Авторы отталкиваются от утверждения: мы оцениваем реворд для финальной картинки X0, а затем используем его, чтобы определить направления изменения velocity для промежуточных состояний Xt.<br><br>Flow matching моделирует расшумление по прямой, но на практике траектория получается непрямой. Поэтому оптимальное направление изменения velocity для промежуточной точки может отличаться от направления для X0. Поэтому авторы предлагают рассматривать глобальный (оценка для X0) реворд и локальный (для промежуточной точки Zq).<br><br>В OPSD учитель — EMA-версия онлайн-модели, усреднённая по предыдущим шагам. Она стабильнее и генерирует траектории. Внешняя дифференцируемая реворд-модель всё ещё нужна.<br><br><strong>Глобальный реворд<br></strong><br>EMA-учитель генерирует траекторию до заранее выбранной промежуточной точки Zq, затем продолжает инференс до X0, для которого рассчитывается endpoint reward.<br><br>Глобальный реворд оценивает перспективность траектории. Для каждого промпта генерируют несколько картинок, считают нормализованный advantage и получают вес сэмпла относительно остальных. Так определяют качество семпла и перевзвешивают примеры при обучении.<br><br><strong>Локальный реворд<br></strong><br>Из точки Zq делаем одношаговое предсказание Y0 и начинаем исследовать локальный reward landscape. Надо найти для Y0 положительного и отрицательного соседей. Так как реворд-модель дифференцируемая, можно двигаться по её градиенту и антиградиенту. В одном направлении реворд должен расти, в другом — падать.<br><br>Но если уйти слишком далеко от исходной точки, примеры потеряют актуальность. Поэтому авторы ограничивают движение шаром с адаптивным радиусом. После каждого шага градиентного подъёма или спуска точка проецируется обратно в этот шар.<br><br><strong>Обучение студента<br></strong><br>Дальше происходит стандартный MSE-фит. Есть предсказания студента и учителя, а также положительное и отрицательное направления, полученные через локальный реворд.<br><br>По аналогии с Diffusion NFT пытаемся развернуть вектор изменения предсказания студента так, чтобы притягиваться к положительному направлению и отталкиваться от отрицательного. Глобальный реворд задаёт веса этих направлений.<br><br><strong>Результаты и что смутило<br></strong><br>В экспериментах OPSD оптимизирует заданный реворд лучше Diffusion NFT и ReFL.<br><br>Авторы много рассуждают о том, почему неправильно использовать реворд для X0 при оптимизации промежуточных состояний.<br><br>При этом в экспериментах с разными уровнями шума оптимальным оказался 0,27, при котором локальный и глобальный реворды довольно близки. А проблема с оценкой более зашумлённых состояний остаётся актуальной.<br><br><em>Разбор подготовил </em><tg-emoji emoji-id="5224192932302565805">❣</tg-emoji> <em>Александр Устюжанин </em><br><a href="https://t.me/+SSca5c9pEyszN2Uy" rel="nofollow noopener noreferrer"><u>CV Time</u></a><div class="media"><img class="media-img" loading="lazy" src="../../assets/media/thumbs/333_480.webp" srcset="../../assets/media/thumbs/333_480.webp 480w, ../../assets/media/333.jpg 1200w" sizes="(max-width: 768px) 100vw, 800px" alt="" data-post-id="333" data-image-index="0" /></div></div>
+      <div class="actions">
+        <span>597 просмотров · 27 реакций</span>
+        <span class="action-links"><a href="https://t.me/timeforcv/333" target="_blank" rel="noopener">Открыть в Telegram</a> · <a href="../index.html">К списку постов</a> · <a href="./333.html">Ссылка на этот пост</a></span>
+      </div>
+    </article>
+
+    <div class="pager single-nav">
+      <a id="prevPost" class="nav-link disabled" href="#" style="visibility:hidden">← Более новый</a>
+      <a id="nextPost" class="nav-link" href="./332.html" style="visibility:visible">Более старый →</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span>based on <a href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">tg-to-gh-pages</a> (created by <a href="https://github.com/ml-brand" target="_blank" rel="noopener">ML Brand</a>)</span>
+        <a id="repoLink" href="https://github.com/ml-brand/tg-to-gh-pages" target="_blank" rel="noopener">Do the same with your channel.</a>
+        <span class="footer-links">
+          static copy ·
+          <a href="../../feed.xml" target="_blank" rel="noopener">RSS</a> ·
+          <a href="../../atom.xml" target="_blank" rel="noopener">Atom</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__STATIC_POSTS = [{"id": 333, "media": [{"kind": "photo", "path": "../../assets/media/333.jpg", "thumb": "../../assets/media/thumbs/333_480.webp", "size": 88755, "mime": "image/jpeg", "name": null}]}];
+    window.__STATIC_META = {"title": "CV Time", "username": "timeforcv", "channel": "timeforcv", "last_sync_utc": "2026-11-24T16:26:05Z", "posts_count": 162, "last_seen_message_id": 333, "stats": {"new": 160, "updated": 47, "media_downloaded": 160}, "avatar": "assets/channel_avatar.jpg", "meta_schema_version": "1.0.0", "posts_schema_version": "1.0.0"};
+  </script>
+  <script src="../../common.js"></script>
+  <script src="../../static.js"></script>
+</body>
+</html>
